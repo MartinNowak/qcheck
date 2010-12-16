@@ -6,24 +6,29 @@ module quickcheck.detail.random;
 
 private {
   import std.random;
-  import std.traits : isFloatingPoint, isIntegral;
+  import std.traits : isFloatingPoint, isIntegral, isSigned;
+  debug import std.stdio : writeln, writefln;
 
   import quickcheck.detail.conv;
 }
 
-// package:
+package:
+// debug=RANDOM;
 
-static T randomNumeric(T)() if(isFloatingPoint!T) {
+T randomNumeric(T)() if(isFloatingPoint!T) {
   real res = sGen.front;
   sGen.popFront;
-  return res / (UIntType.max - UIntType.min);
+  res /= (UIntType.max - UIntType.min);
+  debug(RANDOM) writefln("randomNumeric!%s res:%s", typeid(T), res);
+  return res;
 }
 
-static T randomNumeric(T)(T min, T max) if(isIntegral!T) {
-  auto res = randomNumeric!(real) * (max - min) + min;
+T randomNumeric(T)(T min, T max) if(isIntegral!T) {
+  auto res = randomNumeric!(real);
+  res = res * max - res * min + min;
   return clipTo!T(res);
 }
-static T randomNumeric(T)() if(isIntegral!T) {
+T randomNumeric(T)() if(isIntegral!T) {
   return randomNumeric(T.min, T.max);
 }
 
@@ -32,9 +37,11 @@ private:
 alias uint UIntType;
 static Random sGen;
 
-shared static this() {
+static this() {
   sGen = Mt19937(unpredictableSeed);
+  debug(RANDOM) writefln("generator first %s", sGen.front);
 }
+
 
 unittest {
   auto GenBackup = sGen.save();
