@@ -3,6 +3,8 @@ private {
   import std.stdio : writeln, writefln;
   import std.math;
   import std.traits;
+  import std.typecons;
+  import std.typetuple;
 
   import quickcheck._;
 }
@@ -120,4 +122,66 @@ unittest {
     //! very unlikely
     assert(++i < 100);
   }
+}
+
+version(unittest) {
+  struct Entry {
+    this(Second val) {
+      this.val = val;
+    }
+    Second val;
+  }
+  class Second {
+    this(Recursive val) {
+      this.val = val;
+    }
+    Recursive val;
+  }
+  struct Recursive {
+    this(Entry val) {
+      this.val = val;
+    }
+    Entry val;
+  }
+}
+
+unittest {
+  bool succeeded = false;
+  try {
+    auto val = getArbitrary!(Entry, Ctor.Any, Init.Members)();
+  } catch (CyclicDepException e) {
+    succeeded = true;
+  }
+  assert(succeeded);
+}
+
+unittest {
+  auto val = getArbitrary!(Tuple!(uint, float))();
+  assert(val[0] == uint.init);
+  assert(isNaN(val[1]));
+}
+
+version(unittest) {
+  struct UserStruct {
+    this(int val) { this.val = val; }
+    int val;
+  }
+  struct UserStructHolder {
+    this(UserStruct val) { this.val = val; }
+    UserStruct val;
+  }
+  struct UserStructInit {
+    UserStruct val;
+  }
+  UserStruct Factory() {
+    return UserStruct(10);
+  }
+}
+unittest {
+  auto val = getArbitrary!(UserStruct, Ctor.Any, Init.Members, Factory)();
+  assert(val.val == 10);
+  auto val2 = getArbitrary!(UserStructHolder, Ctor.Any, Init.Members, Factory)();
+  assert(val2.val.val == 10);
+  auto val3 = getArbitrary!(UserStructInit, Ctor.Any, Init.Members, Factory)();
+  assert(val3.val.val == 10);
 }

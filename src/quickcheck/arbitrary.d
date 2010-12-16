@@ -9,18 +9,9 @@ private {
 }
 
 T getArbitrary
-(T, Ctor cp = Ctor.Any, Init ip = Init.Params)
+(T, Ctor ctorPolicy = Ctor.Any, Init initPolicy = Init.Params, UserBuilder...)
 ()
-in {
-  auto info = typeid(T);
-  assert(sRecursed.find(info).empty,
-         "Recursive call of getArbitrary!("~
-         to!string(typeid(T))~")()");
-  sRecursed ~= info;
-}
-out {
-  sRecursed.popBack;
-}
-body {
-  return arbitrary!(T, cp, ip).get();
+{
+  auto builder = Builder!(T, ctorPolicy, initPolicy, UserBuilder)();
+  return builder.get();
 }
