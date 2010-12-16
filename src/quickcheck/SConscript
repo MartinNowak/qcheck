@@ -1,0 +1,7 @@
+Import('env')
+
+qcheck_srcs = Glob('*/*.d') + Glob('*.d')
+qcheck_lib = env.Library('qcheck', qcheck_srcs,
+           DPATH=['#/src'], DLIBFLAGS='-p64')
+
+Return('qcheck_lib')
