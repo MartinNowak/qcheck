@@ -15,9 +15,15 @@ private {
 }
 
 
-struct Builder(T, Ctor ctorPolicy, Init initPolicy, UserBuilder...)
+struct Builder(T, TL...)
 {
-  alias staticMap!(ReturnType, UserBuilder) UserTypes;
+  alias PoliciesT!(TypeTuple!(TL, DefaultPolicies)) Poli;
+  alias NonPoliciesT!TL NonPoli;
+
+  static if (NonPoli.length)
+    alias staticMap!(ReturnType, NonPoli) UserTypes;
+  else
+    alias TypeTuple!() UserTypes;
 
   //! To detect recursive calls at runtime
   TypeInfo[] sRecursed;
@@ -36,9 +42,9 @@ struct Builder(T, Ctor ctorPolicy, Init initPolicy, UserBuilder...)
 
     enum UserIdx = staticIndexOf!(T2, UserTypes);
     static if (UserIdx != -1) {
-      alias UserBuilder[UserIdx] Ctor;
+      alias NonPoli[UserIdx] Ctor;
       static assert(isCallable!(Ctor), to!string(Ctor)~" is not callable");
-      return UserBuilder[UserIdx]();
+      return Ctor();
     } else {
       return arbitraryL!(T2).get();
     }
@@ -47,7 +53,7 @@ struct Builder(T, Ctor ctorPolicy, Init initPolicy, UserBuilder...)
   template arbitraryL(T) if(is(T == struct)) {
     T get() {
       auto t = newStructInstance!(T)();
-      static if (initPolicy == Init.Members)
+      static if (hasPolicy!(Policies.RandomizeMember, Poli))
         initTuple(t.tupleof);
       return t;
     }
@@ -59,7 +65,7 @@ struct Builder(T, Ctor ctorPolicy, Init initPolicy, UserBuilder...)
   template arbitraryL(T) if(is(T == class)) {
     T get() {
       auto newInst = newClassInstance!(T)();
-      static if (initPolicy == Init.Members) {
+      static if (hasPolicy!(Policies.RandomizeMember, Poli)) {
         if (newInst) {
           initTuple(newInst.tupleof);
         }
@@ -128,22 +134,26 @@ private:
 
   T newStructInstance(T)() {
     alias ctorOverloadSet!(T) overloads;
-    alias Filter!(ctorPolicy, overloads) Ctors;
+
+    static if (hasPolicy!(Policies.AnyCtor, Poli))
+      alias overloads Ctors;
+    else
+      alias FilterDefaultCtor!(overloads) Ctors;
 
     auto which = randomNumeric(0u, Ctors.length - 1);
     return callStructCtorOverload!(T, Ctors)(which);
   }
 
+  T callStructCtorOverload(T)(uint idx) {
+    return T();
+  }
+
   T callStructCtorOverload(T, Overloads...)(uint idx) {
-    static if (Overloads.length == 0)
-      return T();
-    else {
-      foreach(i,ctor; Overloads) {
-        if (i == idx)
-          return callStructCtor!(T, ctor)();
-      }
-      assert(0);
+    foreach(i,ctor; Overloads) {
+      if (i == idx)
+        return callStructCtor!(T, ctor)();
     }
+    assert(0, "ctor index out of range");
   }
 
   T callStructCtor(T, ctorType)() {
@@ -161,22 +171,26 @@ private:
 
   T newClassInstance(T)() {
     alias ctorOverloadSet!(T) overloads;
-    alias Filter!(ctorPolicy, overloads) Ctors;
+
+    static if (hasPolicy!(Policies.AnyCtor, Poli))
+      alias overloads Ctors;
+    else
+      alias FilterDefaultCtor!(overloads) Ctors;
 
     auto which = randomNumeric(0u, Ctors.length - 1);
     return callClassCtorOverload!(T, Ctors)(which);
   }
 
+  T callClassCtorOverload(T)(uint idx) {
+    return new T();
+  }
+
   T callClassCtorOverload(T, Overloads...)(uint idx) {
-    static if (Overloads.length == 0)
-      return new T();
-    else {
-      foreach(i,ctor; Overloads) {
-        if (i == idx)
-          return callClassCtor!(T, ctor)();
-      }
-      assert(0);
+    foreach(i,ctor; Overloads) {
+      if (i == idx)
+        return callClassCtor!(T, ctor)();
     }
+    assert(0, "ctor index out of range");
   }
 
   T callClassCtor(T, ctorType)() {
@@ -223,19 +237,16 @@ template ctorOverloadSet
     alias TypeTuple!() ctorOverloadSet; // empty
 }
 
-template Filter
-(Ctor cp, TL...)
-{
-  static if (cp == Ctor.Any)
-    alias TL Filter;
-  else
-    alias EraseNonDefault!TL Filter;
-}
-template EraseNonDefault
+template FilterDefaultCtor
 (TL...)
 {
-  static if (ParameterTypeTuple!(TL[0]).length > 0)
-    alias Erase!TL EraseNonDefault;
-  else
-    alias TL EraseNonDefault;
+  static if (TL.length) {
+    static if (ParameterTypeTuple!(TL[0]).length > 0)
+      alias FilterDefaultCtor!(Erase!TL) FilterDefaultCtor;
+    else
+      alias TypeTuple!(TL[0], FilterDefaultCtor!TL[1..$]) FilterDefaultCtor;
+  }
+  else {
+    alias TypeTuple!() FilterDefaultCtor;
+  }
 }
