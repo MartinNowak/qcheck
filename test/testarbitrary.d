@@ -93,7 +93,7 @@ class ClassWCtor {
 unittest {
   auto cl = getArbitrary!TestClass();
   assert(cl.val is null);
-  cl = getArbitrary!(TestClass, Ctor.Any, Init.Members)();
+  cl = getArbitrary!(TestClass, Policies.RandomizeMember, Policies.AnyCtor)();
   assert(!(cl.val is null));
 }
 
@@ -148,7 +148,7 @@ version(unittest) {
 unittest {
   bool succeeded = false;
   try {
-    auto val = getArbitrary!(Entry, Ctor.Any, Init.Members)();
+    auto val = getArbitrary!(Entry, Policies.RandomizeMember)();
   } catch (CyclicDepException e) {
     succeeded = true;
   }
@@ -178,10 +178,12 @@ version(unittest) {
   }
 }
 unittest {
-  auto val = getArbitrary!(UserStruct, Ctor.Any, Init.Members, Factory)();
+  auto val = getArbitrary!(UserStruct, Factory)();
   assert(val.val == 10);
-  auto val2 = getArbitrary!(UserStructHolder, Ctor.Any, Init.Members, Factory)();
+  auto val2 = getArbitrary!(UserStructHolder, Factory,
+                            Policies.AnyCtor, Policies.RandomizeMember)();
   assert(val2.val.val == 10);
-  auto val3 = getArbitrary!(UserStructInit, Ctor.Any, Init.Members, Factory)();
+  auto val3 = getArbitrary!(UserStructInit, Policies.AnyCtor,
+                            Policies.RandomizeMember, Factory)();
   assert(val3.val.val == 10);
 }
