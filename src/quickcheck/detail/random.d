@@ -32,6 +32,14 @@ T randomNumeric(T)() if(isIntegral!T) {
   return randomNumeric(T.min, T.max);
 }
 
+T randomChar(T)() {
+  T res;
+  do {
+    res = clipTo!T(randomNumeric(cast(uint)T.min, cast(uint)T.max));
+  } while (res == T.init);
+  return res;
+}
+
 private:
 
 alias uint UIntType;

@@ -187,3 +187,8 @@ unittest {
                             Policies.RandomizeMember, Factory)();
   assert(val3.val.val == 10);
 }
+
+unittest {
+  auto array = getArbitrary!(float[])();
+  auto aarray = getArbitrary!(int[string])();
+}

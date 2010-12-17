@@ -50,6 +50,9 @@ struct Builder(T, TL...)
     }
   }
 
+  /**
+   * Instante a struct, choose a random ctor overload.
+   */
   template arbitraryL(T) if(is(T == struct)) {
     T get() {
       auto t = newStructInstance!(T)();
@@ -60,7 +63,7 @@ struct Builder(T, TL...)
   }
 
   /**
-   * Instantiating a class, choose a random ctor overload.
+   * Instante a class, choose a random ctor overload.
    */
   template arbitraryL(T) if(is(T == class)) {
     T get() {
@@ -92,6 +95,57 @@ struct Builder(T, TL...)
 
       auto name = implementors[rndIdx].name;
       return cast(T)Object.factory(name);
+    }
+  }
+
+  /**
+   * Instante an array.
+   */
+  template arbitraryL(T) if(isArray!T) {
+    T get() {
+      alias Unqual!(typeof(T[0])) ElemT;
+
+      auto count = randomNumeric(0u, 20u);
+      T res;
+      while (count--) {
+        res ~= internalGet!(ElemT)();
+      }
+      return res;
+      /*
+      static if (is(T == immutable))
+        return res.idup;
+      else
+        return res;
+      */
+    }
+  }
+
+  /**
+   * Instante an array.
+   */
+  template arbitraryL(T) if(isAssociativeArray!T) {
+    T get() {
+      alias typeof(T.init.keys[0]) KeyT;
+      alias typeof(T.init.values[0]) ValueT;
+
+      auto count = randomNumeric(0u, 20u);
+      T res;
+      while (count--) {
+        auto key = internalGet!(KeyT)();
+        auto value = internalGet!(ValueT)();
+        res[key] = value;
+      }
+      return res;
+    }
+  }
+
+  /**
+   * Default char
+   */
+  template arbitraryL(T) if(is(T == dchar) || is(T == wchar)
+                            || is(T == char)) {
+    T get() {
+      return randomChar!(T)();
     }
   }
 
