@@ -12,15 +12,8 @@ private {
  * clips a source value to a target values maximal range.
  */
 T clipTo(T, S)(S value)
-if (isImplicitlyConvertible!(S, T))
 {
-  return cast(T) value;
-}
-T clipTo(T, S)(S value)
-if (!isImplicitlyConvertible!(S, T)
-    && isNumeric!(S) && isNumeric!(T))
-{
-    static if (mostNegative!(S) < 0) {
+    static if (mostNegative!(S) < mostNegative!(T)) {
       value = max(value, mostNegative!(T));
     }
     static if (S.max > T.max) {
