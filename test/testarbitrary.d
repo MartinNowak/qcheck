@@ -27,11 +27,13 @@ template testNumeric(T) {
   void run() {
     auto b0 = getArbitrary!T();
     size_t i;
-    while (b0 == getArbitrary!T())
+    while (b0 == getArbitrary!T()) {
+      assert(i <= maxIt!T);
       ++i;
-    assert(i <= maxIt!T);
+    }
   }
 }
+
 
 unittest {
   testNumeric!bool.run();
@@ -47,6 +49,7 @@ unittest {
   testNumeric!double.run();
   testNumeric!real.run();
 }
+
 
 version(unittest) {
   enum IntEnum {
@@ -93,7 +96,7 @@ class ClassWCtor {
 unittest {
   auto cl = getArbitrary!TestClass();
   assert(cl.val is null);
-  cl = getArbitrary!(TestClass, Policies.RandomizeMember, Policies.AnyCtor)();
+  cl = getArbitrary!(TestClass, Policies.RandomizeMembers, Policies.AnyCtor)();
   assert(!(cl.val is null));
 }
 
@@ -148,7 +151,7 @@ version(unittest) {
 unittest {
   bool succeeded = false;
   try {
-    auto val = getArbitrary!(Entry, Policies.RandomizeMember)();
+    auto val = getArbitrary!(Entry, Policies.RandomizeMembers)();
   } catch (CyclicDepException e) {
     succeeded = true;
   }
@@ -181,14 +184,32 @@ unittest {
   auto val = getArbitrary!(UserStruct, Factory)();
   assert(val.val == 10);
   auto val2 = getArbitrary!(UserStructHolder, Factory,
-                            Policies.AnyCtor, Policies.RandomizeMember)();
+                            Policies.AnyCtor, Policies.RandomizeMembers)();
   assert(val2.val.val == 10);
   auto val3 = getArbitrary!(UserStructInit, Policies.AnyCtor,
-                            Policies.RandomizeMember, Factory)();
+                            Policies.RandomizeMembers, Factory)();
   assert(val3.val.val == 10);
 }
 
 unittest {
+  auto farray = getArbitrary!(int[4])();
   auto array = getArbitrary!(float[])();
   auto aarray = getArbitrary!(int[string])();
+}
+
+version(unittest) {
+  bool testFloat(float f) {
+    return -1000 < f && f < 1000;
+  }
+  bool testArray(int K)(byte[] ary) {
+    return ary.length < K;
+  }
+}
+unittest {
+  quickCheck!(testFloat, minValue(-1000), maxValue(1000))();
+  quickCheck!(testArray!10, size(10))();
+  quickCheck!(testFloat, Policies.AnyCtor, minValue(-1000),
+              Policies.RandomizeMembers, maxValue(1000))();
+  quickCheck!(testArray!5, minValue(-2), Policies.AnyCtor,
+              size(5), maxValue(4))();
 }

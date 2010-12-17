@@ -3,27 +3,30 @@ module quickcheck.quickcheck;
 private {
   import std.traits;
   import std.typecons;
-  import std.typetuple : staticMap;
+  import std.typetuple;
   import std.stdio;
 
   import quickcheck.arbitrary;
   import quickcheck.exceptions;
+  import quickcheck.policies;
 }
 
 void quickCheck(alias Testee, TL...)() {
-  alias Tuple!(staticMap!(Unqual, ParameterTypeTuple!Testee)) TP;
+  alias TypeTuple!(staticMap!(Unqual, ParameterTypeTuple!Testee)) TP;
 
   enum TestCount = 1_000;
   auto i = 0;
   while (i < TestCount) {
-    auto params = getArbitrary!(TP, TL)();
+    auto params = getArbitrary!(Tuple!TP, TL, Policies.RandomizeMembers)();
     // TODO: add parameter predicate
     if (!Testee(params.tupleof)) {
       throw new PropertyException(formatErrMessage(Identifier!Testee, Arguments(params), i));
     }
+    writef("prop %s: %s \r", Identifier!Testee, i);
+    stdout.flush();
     ++i;
   }
-  writeln(formatSuccessMessage(Identifier!Testee, TestCount));
+  writef("prop %s: %s passed \n", Identifier!Testee, i);
 }
 
 private:
@@ -42,10 +45,5 @@ string Arguments(TP)(TP params) {
 
 string formatErrMessage(string identifier, string params, int count) {
   return "\nFailed property: \"" ~ identifier ~
-    "\" at run: " ~ to!string(count) ~ " with arguments:" ~ params;
-}
-
-string formatSuccessMessage(string identifier, int count) {
-  return "Passed property: \"" ~ identifier ~
-    "\" after: " ~ to!string(count) ~ " tests";
+    "\" at run: " ~ to!string(count) ~ " with arguments\n" ~ params;
 }

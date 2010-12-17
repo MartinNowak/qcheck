@@ -6,7 +6,7 @@ module quickcheck.detail.random;
 
 private {
   import std.random;
-  import std.traits : isFloatingPoint, isIntegral, isSigned;
+  import std.traits;
   debug import std.stdio : writeln, writefln;
 
   import quickcheck.detail.conv;
@@ -15,7 +15,7 @@ private {
 package:
 // debug=RANDOM;
 
-T randomNumeric(T)() if(isFloatingPoint!T) {
+T unitRandom(T)() if(isFloatingPoint!T) {
   real res = sGen.front;
   sGen.popFront;
   res /= (UIntType.max - UIntType.min);
@@ -23,13 +23,18 @@ T randomNumeric(T)() if(isFloatingPoint!T) {
   return res;
 }
 
-T randomNumeric(T)(T min, T max) if(isIntegral!T) {
-  auto res = randomNumeric!(real);
+T randomNumeric(T, T2)(T2 min, T2 max) if(isNumeric!T && !is(T == T2)) {
+  auto res = unitRandom!(real);
   res = res * max - res * min + min;
   return clipTo!T(res);
 }
-T randomNumeric(T)() if(isIntegral!T) {
-  return randomNumeric(T.min, T.max);
+T randomNumeric(T)() if(isNumeric!T) {
+  return randomNumeric!(T)(T.min, T.max);
+}
+T randomNumeric(T)(T min, T max) if(isNumeric!T) {
+  auto res = unitRandom!(real);
+  res = res * max - res * min + min;
+  return clipTo!T(res);
 }
 
 T randomChar(T)() {

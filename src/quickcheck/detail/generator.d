@@ -1,1 +1,0 @@
-module quickcheck.detail.generator;

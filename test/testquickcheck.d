@@ -15,9 +15,9 @@ version(unittest) {
 }
 
 unittest {
-  quickCheck!(testFunc, Policies.RandomizeMember)();
+  quickCheck!(testFunc, Policies.RandomizeMembers)();
   A a;
   auto dg = &a.testMe;
   a.m = 10;
-  quickCheck!(dg, Policies.RandomizeMember)();
+  quickCheck!(dg, Policies.RandomizeMembers)();
 }

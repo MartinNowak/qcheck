@@ -10,6 +10,7 @@ private {
   debug import std.stdio;
 
   import quickcheck.detail.random;
+  import quickcheck.detail.conv;
   import quickcheck.policies;
   import quickcheck.exceptions;
 }
@@ -18,10 +19,13 @@ private {
 struct Builder(T, TL...)
 {
   alias PoliciesT!(TypeTuple!(TL, DefaultPolicies)) Poli;
-  alias NonPoliciesT!TL NonPoli;
+  alias CallablesT!TL UserCtors;
+  enum SizeV = SizeT!(TL).val;
+  enum MinValueV = MinValueT!(TL).val;
+  enum MaxValueV = MaxValueT!(TL).val;
 
-  static if (NonPoli.length)
-    alias staticMap!(ReturnType, NonPoli) UserTypes;
+  static if (UserCtors.length)
+    alias staticMap!(ReturnType, UserCtors) UserTypes;
   else
     alias TypeTuple!() UserTypes;
 
@@ -42,11 +46,25 @@ struct Builder(T, TL...)
 
     enum UserIdx = staticIndexOf!(T2, UserTypes);
     static if (UserIdx != -1) {
-      alias NonPoli[UserIdx] Ctor;
+      alias UserCtors[UserIdx] Ctor;
       static assert(isCallable!(Ctor), to!string(Ctor)~" is not callable");
-      return Ctor();
+      return callUserFunc!(T2, Ctor)();
     } else {
       return arbitraryL!(T2).get();
+    }
+  }
+
+  /**
+   * Call a user defined function to instantiate a T.
+   */
+  T callUserFunc(T, alias Ctor)() {
+    alias staticMap!(Unqual, ParameterTypeTuple!(Ctor)) TP;
+
+    static if (TP.length == 0)
+      return Ctor();
+    else {
+      auto ctorParams = constructTuple!(TP)();
+      return Ctor(ctorParams.tupleof);
     }
   }
 
@@ -56,7 +74,7 @@ struct Builder(T, TL...)
   template arbitraryL(T) if(is(T == struct)) {
     T get() {
       auto t = newStructInstance!(T)();
-      static if (hasPolicy!(Policies.RandomizeMember, Poli))
+      static if (hasPolicy!(Policies.RandomizeMembers, Poli))
         initTuple(t.tupleof);
       return t;
     }
@@ -68,7 +86,7 @@ struct Builder(T, TL...)
   template arbitraryL(T) if(is(T == class)) {
     T get() {
       auto newInst = newClassInstance!(T)();
-      static if (hasPolicy!(Policies.RandomizeMember, Poli)) {
+      static if (hasPolicy!(Policies.RandomizeMembers, Poli)) {
         if (newInst) {
           initTuple(newInst.tupleof);
         }
@@ -99,24 +117,34 @@ struct Builder(T, TL...)
   }
 
   /**
-   * Instante an array.
+   * Instante a static array.
    */
-  template arbitraryL(T) if(isArray!T) {
+  template arbitraryL(T) if(isStaticArray!T) {
     T get() {
       alias Unqual!(typeof(T[0])) ElemT;
 
-      auto count = randomNumeric(0u, 20u);
+      auto count = T.length;
+      T res;
+      while (count--) {
+        res[count] = internalGet!(ElemT)();
+      }
+      return res;
+    }
+  }
+
+  /**
+   * Instante an array.
+   */
+  template arbitraryL(T) if(isDynamicArray!T) {
+    T get() {
+      alias Unqual!(typeof(T[0])) ElemT;
+
+      auto count = randomNumeric(0u, SizeV);
       T res;
       while (count--) {
         res ~= internalGet!(ElemT)();
       }
       return res;
-      /*
-      static if (is(T == immutable))
-        return res.idup;
-      else
-        return res;
-      */
     }
   }
 
@@ -128,7 +156,7 @@ struct Builder(T, TL...)
       alias typeof(T.init.keys[0]) KeyT;
       alias typeof(T.init.values[0]) ValueT;
 
-      auto count = randomNumeric(0u, 20u);
+      auto count = randomNumeric(0u, SizeV);
       T res;
       while (count--) {
         auto key = internalGet!(KeyT)();
@@ -154,7 +182,7 @@ struct Builder(T, TL...)
    */
   template arbitraryL(T) if(isNumeric!T) {
     T get() {
-      return randomNumeric!(T)();
+      return randomNumeric!(T)(clipTo!T(MinValueV), clipTo!T(MaxValueV));
     }
   }
 
