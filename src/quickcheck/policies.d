@@ -14,37 +14,22 @@ enum Policies
   AnyCtor,     // Will randomly call any available constructor.
   DefaultCtorsOnly, // Will only construct default constructible structs/classes.
   RandomizeMembers,
+  KeepGoing,
 }
 
-struct Size {
-  this(size_t val) {
-    this.val = val;
-  }
-  size_t val = 100;
+Count count(size_t val) {
+  return Count(val);
 }
-struct MinValue {
-  this(real val) {
-    this.val = val;
-  }
-  real val = -1e6;
-}
-struct MaxValue {
-  this(real val) {
-    this.val = val;
-  }
-  real val = 1e6;
-}
-
 Size size(size_t val) {
   return Size(val);
 }
-
 MinValue minValue(T)(T val) {
   return MinValue(to!real(val));
 }
 MaxValue maxValue(T)(T val) {
   return MaxValue(to!real(val));
 }
+
 package:
 
 alias TypeTuple!(Policies.AnyCtor) DefaultPolicies;
@@ -76,6 +61,16 @@ template hasPolicy(alias Policy, Policies...) {
   enum hasPolicy = staticIndexOf!(Policy, Policies) != -1;
 }
 
+template CountT() {
+  enum CountT = Count.init;
+}
+template CountT(TL...) {
+  static if (is(typeof(TL[0]) : Count))
+    enum CountT = TL[0];
+  else
+    enum CountT = CountT!(TL[1..$]);
+}
+
 template SizeT() {
   enum SizeT = Size.init;
 }
@@ -104,6 +99,33 @@ template MinValueT(TL...) {
     enum MinValueT = TL[0];
   else
     enum MinValueT = MinValueT!(TL[1..$]);
+}
+
+private:
+
+struct Size {
+  this(size_t val) {
+    this.val = val;
+  }
+  size_t val = 100;
+}
+struct Count {
+  this(size_t val) {
+    this.val = val;
+  }
+  size_t val = 100;
+}
+struct MinValue {
+  this(real val) {
+    this.val = val;
+  }
+  real val = -1e6;
+}
+struct MaxValue {
+  this(real val) {
+    this.val = val;
+  }
+  real val = 1e6;
 }
 
 unittest {

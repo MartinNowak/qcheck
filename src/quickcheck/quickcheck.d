@@ -5,28 +5,50 @@ private {
   import std.typecons;
   import std.typetuple;
   import std.stdio;
+  import std.exception;
+  import core.exception : AssertError;
 
   import quickcheck.arbitrary;
   import quickcheck.exceptions;
   import quickcheck.policies;
 }
 
-void quickCheck(alias Testee, TL...)() {
+bool quickCheck(alias Testee, TL...)() {
   alias TypeTuple!(staticMap!(Unqual, ParameterTypeTuple!Testee)) TP;
+  enum TestCount = CountT!(TL).val;
+  enum KeepGoing = hasPolicy!(Policies.KeepGoing, TL);
 
-  enum TestCount = 1_000;
   auto i = 0;
+  alias Tuple!(size_t, Tuple!TP, string) FailPair;
+
+  FailPair[] failingParams;
+  Tuple!TP params;
+
   while (i < TestCount) {
-    auto params = getArbitrary!(Tuple!TP, TL, Policies.RandomizeMembers)();
-    // TODO: add parameter predicate
-    if (!Testee(params.tupleof)) {
-      throw new PropertyException(formatErrMessage(Identifier!Testee, Arguments(params), i));
+    try {
+      params = getArbitraryTuple!(Tuple!TP, TL)();
+      // TODO: add parameter predicate
+      if (!Testee(params.tupleof))
+        failingParams ~= FailPair(i, params, Identifier!Testee ~ " false");
+      writef("prop %s: %s \r", Identifier!Testee, i);
+      stdout.flush();
+      ++i;
+    } catch(AssertError e) {
+      failingParams ~= FailPair(i, params, to!string(e));
+      if (!KeepGoing) break;
+    } catch(Exception e) {
+      failingParams ~= FailPair(i, params, to!string(e));
+      if (!KeepGoing) break;
     }
-    writef("prop %s: %s \r", Identifier!Testee, i);
-    stdout.flush();
-    ++i;
   }
-  writef("prop %s: %s passed \n", Identifier!Testee, i);
+  if (failingParams.length == 0) {
+    writef("prop %s: %s passed \n", Identifier!Testee, i);
+    return true;
+  } else {
+    writef("prop %s: failed \n", Identifier!Testee);
+    writeln("Failing parameters ", failingParams);
+    return false;
+  }
 }
 
 private:
