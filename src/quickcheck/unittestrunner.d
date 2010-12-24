@@ -4,10 +4,8 @@ private {
   import core.runtime;
   import std.stdio : writeln;
   import std.array : rjustify;
-  import std.algorithm : min, max;
+  import std.algorithm : min, max, startsWith;
 }
-
-version(unittest):
 
 static this () {
   core.runtime.Runtime.moduleUnitTester(&unittestrunner);
@@ -21,6 +19,10 @@ bool unittestrunner()
   {
     if( m )
     {
+      //! phobos unittest from imported modules should not run
+      if (startsWith(m.name, "std.", "core."))
+        continue;
+
       auto fp = m.unitTest;
       if( fp )
       {
