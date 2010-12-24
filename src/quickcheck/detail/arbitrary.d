@@ -42,7 +42,7 @@ struct Builder(T, TL...)
       throw new CyclicDepException("Recursive call of getArbitrary!("~
                                    to!string(typeid(T))~")()");
     this.sRecursed ~= info;
-    scope(exit) sRecursed.popBack;
+    scope(exit) this.sRecursed.popBack;
 
     enum UserIdx = staticIndexOf!(T2, UserTypes);
     static if (UserIdx != -1) {
@@ -75,7 +75,7 @@ struct Builder(T, TL...)
     T get() {
       auto t = newStructInstance!(T)();
       static if (hasPolicy!(Policies.RandomizeMembers, Poli))
-        initTuple(t.tupleof);
+        this.initTuple(t.tupleof);
       return t;
     }
   }
@@ -223,7 +223,7 @@ private:
       alias FilterDefaultCtor!(overloads) Ctors;
 
     auto which = randomNumeric(0u, Ctors.length - 1);
-    return callStructCtorOverload!(T, Ctors)(which);
+    return this.callStructCtorOverload!(T, Ctors)(which);
   }
 
   T callStructCtorOverload(T)(uint idx) {
