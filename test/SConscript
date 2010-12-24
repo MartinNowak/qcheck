@@ -2,12 +2,10 @@ Import('env qcheck_lib')
 
 _srcs = Glob('*.d')
 
-_d_link_flags=[File('ConsoleApp.def')]
-
 app = env.Program('test',
                   _srcs,
-                  LINKCOM=env['DLINKCOM'],
-                  DLINKFLAGS=_d_link_flags,
+#                  LINKCOM=env['DLINKCOM'],
                   LIBS=[qcheck_lib],
+                  LINKFLAGS=env['LINKFLAGS'] + env['DLINKFLAGS'],
                   DPATH=['#/src', '.'])
 Return('app')
