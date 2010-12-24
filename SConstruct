@@ -1,12 +1,10 @@
 import os
 
-path = ['D:\\Code\\D\\dmd_git\\install\\bin']
-
-env = DefaultEnvironment(tools = ['dmd', 'link'], ENV={'PATH':path})
+env = DefaultEnvironment(tools=['dmd', 'link', 'gcc', 'ar'])
 
 if ARGUMENTS.get('release', ''):
     _build_style='release'
-    _dflags = ['-O', '-release', '-inline']
+    _dflags = ['-O', '-release', '-inline', '-gc']
 else:
     _build_style='debug'
     _dflags=['-debug', '-unittest', '-gc']
@@ -22,8 +20,17 @@ if ARGUMENTS.get('profile', ''):
 if ARGUMENTS.get('cov', ''):
    _dflags.append('-cov')
 
-env.Append(DFLAGS=_dflags)
-env.Append(BUILD_STYLE=_build_style)
+_d_link_flags=['-lphobos2', '-lpthread', '-lm']
+
+if ARGUMENTS.get('m64', ''):
+   _dflags.append('-m64')
+   _link_flags = ['-m64']
+else:
+   _dflags.append('-m32')
+   _link_flags = ['-m32']
+
+env.Append(DFLAGS=_dflags, LINKFLAGS=_link_flags,
+           DLINKFLAGS=_d_link_flags, BUILD_STYLE=_build_style)
 
 qcheck_lib = env.SConscript('src/quickcheck/SConscript', duplicate=0,
                           exports='env',
