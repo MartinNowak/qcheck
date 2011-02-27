@@ -210,6 +210,19 @@ struct Builder(T, TL...)
     }
   }
 
+  /**
+   * Complex types
+   */
+  template isComplex(T) {
+    enum bool isComplex = staticIndexOf!(Unqual!(T),
+                                         cfloat, cdouble, creal) >= 0;
+  }
+  template arbitraryL(T) if(isComplex!T) {
+    T get() {
+      return internalGet!(typeof(T.re))() + 1i * internalGet!(typeof(T.im))();
+    }
+  }
+
 private:
 
   // struct instantiation helper
