@@ -303,7 +303,7 @@ private:
 
   Tuple!T constructTuple(T...)() if(isTypeTuple!T) {
     Tuple!T res;
-    initTuple(res);
+    initTuple(res.tupleof);
     return res;
   }
 
