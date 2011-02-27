@@ -19,10 +19,6 @@ bool unittestrunner()
   {
     if( m )
     {
-      //! phobos unittest from imported modules should not run
-      if (startsWith(m.name, "std.", "core."))
-        continue;
-
       auto fp = m.unitTest;
       if( fp )
       {
