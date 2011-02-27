@@ -1,7 +1,7 @@
 /**
   Conversion helper
 */
-module quickcheck.detail.conv;
+module qcheck.detail.conv;
 
 private {
   import std.algorithm : min, max;

@@ -1,12 +1,12 @@
-module quickcheck.arbitrary;
+module qcheck.arbitrary;
 
 private {
   import std.array;
   import std.algorithm : find;
   import std.typetuple;
   import std.stdio;
-  import quickcheck.detail.arbitrary;
-  import quickcheck.policies;
+  import qcheck.detail.arbitrary;
+  import qcheck.policies;
 }
 
 T getArbitrary

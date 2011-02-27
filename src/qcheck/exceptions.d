@@ -1,4 +1,4 @@
-module quickcheck.exceptions;
+module qcheck.exceptions;
 
 private {
   import std.conv : to;

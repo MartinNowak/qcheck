@@ -1,4 +1,4 @@
-module quickcheck.policies;
+module qcheck.policies;
 
 private {
   import std.conv : to;

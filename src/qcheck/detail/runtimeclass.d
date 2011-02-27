@@ -1,7 +1,7 @@
 /**
  * Find classinfos at runtime.
  */
-module quickcheck.detail.runtimeclass;
+module qcheck.detail.runtimeclass;
 
 package:
 

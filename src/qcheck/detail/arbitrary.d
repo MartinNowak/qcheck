@@ -1,4 +1,4 @@
-module quickcheck.detail.arbitrary;
+module qcheck.detail.arbitrary;
 
 private {
   import std.algorithm : find;
@@ -9,10 +9,10 @@ private {
   import std.conv : to;
   debug import std.stdio;
 
-  import quickcheck.detail.random;
-  import quickcheck.detail.conv;
-  import quickcheck.policies;
-  import quickcheck.exceptions;
+  import qcheck.detail.random;
+  import qcheck.detail.conv;
+  import qcheck.policies;
+  import qcheck.exceptions;
 }
 
 

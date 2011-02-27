@@ -6,7 +6,7 @@ private {
   import std.typecons;
   import std.typetuple;
 
-  import quickcheck._;
+  import qcheck._;
 }
 
 debug=ARBITRARY;

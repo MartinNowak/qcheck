@@ -1,0 +1,13 @@
+# dmd output
+*.obj
+*.map
+*.deps
+
+# emacs tmpfiles
+*~
+
+# build dirs
+build/
+.sconsign.dblite
+.waf*/
+.lock-wafbuild

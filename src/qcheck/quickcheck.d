@@ -1,4 +1,4 @@
-module quickcheck.quickcheck;
+module qcheck.quickcheck;
 
 private {
   import std.traits;
@@ -8,9 +8,10 @@ private {
   import std.exception;
   import core.exception : AssertError;
 
-  import quickcheck.arbitrary;
-  import quickcheck.exceptions;
-  import quickcheck.policies;
+  import qcheck.arbitrary;
+  import qcheck.exceptions;
+  import qcheck.policies;
+  import qcheck.predicate;
 }
 
 bool quickCheck(alias Testee, TL...)() {

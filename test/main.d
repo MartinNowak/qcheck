@@ -1,6 +1,6 @@
 private {
-  import quickcheck._;
-  import quickcheck.unittestrunner;
+  import qcheck._;
+  import qcheck.unittestrunner;
 }
 
 int main(string[] argv) {

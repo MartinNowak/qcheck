@@ -1,5 +1,5 @@
 private {
-  import quickcheck._;
+  import qcheck._;
 }
 
 version(unittest) {

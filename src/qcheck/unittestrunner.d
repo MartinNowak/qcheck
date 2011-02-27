@@ -1,4 +1,4 @@
-module quickcheck.unittestrunner;
+module qcheck.unittestrunner;
 
 private {
   import core.runtime;

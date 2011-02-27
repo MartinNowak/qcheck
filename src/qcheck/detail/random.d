@@ -2,14 +2,14 @@
    Random generators
    Template wrappers around std.random.
 */
-module quickcheck.detail.random;
+module qcheck.detail.random;
 
 private {
   import std.random;
   import std.traits;
   debug import std.stdio : writeln, writefln;
 
-  import quickcheck.detail.conv;
+  import qcheck.detail.conv;
 }
 
 package:
