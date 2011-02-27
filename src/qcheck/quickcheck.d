@@ -1,6 +1,7 @@
 module qcheck.quickcheck;
 
 private {
+  import std.conv : to;
   import std.traits;
   import std.typecons;
   import std.typetuple;
@@ -19,31 +20,43 @@ bool quickCheck(alias Testee, TL...)() {
   enum TestCount = CountT!(TL).val;
   enum KeepGoing = hasPolicy!(Policies.KeepGoing, TL);
 
-  auto i = 0;
+  size_t tested = 0;
+  size_t rejected = 0;
   alias Tuple!(size_t, Tuple!TP, string) FailPair;
 
   FailPair[] failingParams;
   Tuple!TP params;
 
-  while (i < TestCount) {
+  while (tested < TestCount) {
     try {
       params = getArbitraryTuple!(Tuple!TP, TL)();
-      // TODO: add parameter predicate
-      if (!Testee(params.tupleof))
-        failingParams ~= FailPair(i, params, Identifier!Testee ~ " false");
-      writef("prop %s: %s \r", Identifier!Testee, i);
-      stdout.flush();
-      ++i;
+      auto result = Testee(params.tupleof);
+
+      if (result == QCheckResult.Fail) {
+        failingParams ~= FailPair(tested, params, Identifier!Testee ~ " false");
+        ++tested;
+      } else if (result == QCheckResult.Ok) {
+        writef("prop %s: %s \r", Identifier!Testee, tested);
+        stdout.flush();
+        ++tested;
+      } else if (result == QCheckResult.Reject) {
+        ++rejected;
+      }
+      else {
+        assert(0, "Unexpected return value " ~ to!string(result));
+      }
     } catch(AssertError e) {
-      failingParams ~= FailPair(i, params, to!string(e));
+      failingParams ~= FailPair(tested, params, to!string(e));
       if (!KeepGoing) break;
     } catch(Exception e) {
-      failingParams ~= FailPair(i, params, to!string(e));
+      failingParams ~= FailPair(tested, params, to!string(e));
       if (!KeepGoing) break;
     }
   }
   if (failingParams.length == 0) {
-    writef("prop %s: %s passed \n", Identifier!Testee, i);
+    auto total = tested + rejected;
+    writef("prop %s: passed (%s/%s), rejected (%s/%s) OK \n",
+           Identifier!Testee, tested, total, rejected, total);
     return true;
   } else {
     writef("prop %s: failed \n", Identifier!Testee);
