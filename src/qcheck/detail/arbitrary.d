@@ -139,7 +139,7 @@ struct Builder(T, TL...)
     T get() {
       alias Unqual!(typeof(T[0])) ElemT;
 
-      auto count = randomNumeric(0u, SizeV);
+      auto count = randomNumeric(cast(size_t)0, SizeV);
       T res;
       while (count--) {
         res ~= internalGet!(ElemT)();
@@ -156,7 +156,7 @@ struct Builder(T, TL...)
       alias typeof(T.init.keys[0]) KeyT;
       alias typeof(T.init.values[0]) ValueT;
 
-      auto count = randomNumeric(0u, SizeV);
+      auto count = randomNumeric(cast(size_t)0, SizeV);
       T res;
       while (count--) {
         auto key = internalGet!(KeyT)();
@@ -201,7 +201,7 @@ struct Builder(T, TL...)
   template arbitraryL(T) if(is(T == enum)) {
     T get() {
       alias EnumMembers!T EnumTuple;
-      auto idx = randomNumeric!(size_t)(0u, EnumMembers!T.length - 1);
+      auto idx = randomNumeric!(size_t)(cast(size_t)0, EnumMembers!T.length - 1);
       foreach(i, v; EnumMembers!T) {
         if (i == idx)
           return v;
@@ -222,15 +222,15 @@ private:
     else
       alias FilterDefaultCtor!(overloads) Ctors;
 
-    auto which = randomNumeric(0u, Ctors.length - 1);
+    auto which = randomNumeric(cast(size_t)0, Ctors.length - 1);
     return this.callStructCtorOverload!(T, Ctors)(which);
   }
 
-  T callStructCtorOverload(T)(uint idx) {
+  T callStructCtorOverload(T)(size_t idx) {
     return T();
   }
 
-  T callStructCtorOverload(T, Overloads...)(uint idx) {
+  T callStructCtorOverload(T, Overloads...)(size_t idx) {
     foreach(i,ctor; Overloads) {
       if (i == idx)
         return callStructCtor!(T, ctor)();
@@ -259,15 +259,15 @@ private:
     else
       alias FilterDefaultCtor!(overloads) Ctors;
 
-    auto which = randomNumeric(0u, Ctors.length - 1);
+    auto which = randomNumeric(cast(size_t)0, Ctors.length - 1);
     return callClassCtorOverload!(T, Ctors)(which);
   }
 
-  T callClassCtorOverload(T)(uint idx) {
+  T callClassCtorOverload(T)(size_t idx) {
     return new T();
   }
 
-  T callClassCtorOverload(T, Overloads...)(uint idx) {
+  T callClassCtorOverload(T, Overloads...)(size_t idx) {
     foreach(i,ctor; Overloads) {
       if (i == idx)
         return callClassCtor!(T, ctor)();
