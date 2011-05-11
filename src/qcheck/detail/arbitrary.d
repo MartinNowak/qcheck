@@ -235,7 +235,7 @@ private:
     else
       alias FilterDefaultCtor!(overloads) Ctors;
 
-    auto which = randomNumeric(cast(size_t)0, Ctors.length - 1);
+    auto which = Ctors.length ? randomNumeric(cast(size_t)0, Ctors.length - 1) : 0;
     return this.callStructCtorOverload!(T, Ctors)(which);
   }
 
@@ -272,7 +272,7 @@ private:
     else
       alias FilterDefaultCtor!(overloads) Ctors;
 
-    auto which = randomNumeric(cast(size_t)0, Ctors.length - 1);
+    auto which = Ctors.length ? randomNumeric(cast(size_t)0,  Ctors.length - 1) : 0;
     return callClassCtorOverload!(T, Ctors)(which);
   }
 
