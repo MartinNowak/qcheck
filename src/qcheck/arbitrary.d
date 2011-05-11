@@ -6,6 +6,7 @@ private {
   import std.typetuple;
   import std.stdio;
   import qcheck.detail.arbitrary;
+  import qcheck.detail.random;
   import qcheck.policies;
 }
 
@@ -25,4 +26,8 @@ Tup getArbitraryTuple
   auto builder = Builder!(Tup, TL)();
   builder.initTuple(tup.tupleof);
   return tup;
+}
+
+void setRandomSeed(uint seed) {
+  qcheck.detail.random.setRandomSeed(seed);
 }
