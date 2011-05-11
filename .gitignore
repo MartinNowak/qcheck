@@ -7,7 +7,7 @@
 *~
 
 # build dirs
-build/
-.sconsign.dblite
-.waf*/
-.lock-wafbuild
+bin*/
+lib*/
+import/
+doc/
