@@ -12,29 +12,22 @@ private {
   import qcheck.detail.conv;
 }
 
+void setRandomSeed(uint seed) {
+  sGen = Random(seed);
+}
+
 package:
 // debug=RANDOM;
 
-T unitRandom(T)() if(isFloatingPoint!T) {
-  real res = sGen.front;
-  sGen.popFront;
-  res /= (UIntType.max - UIntType.min);
-  debug(RANDOM) writefln("randomNumeric!%s res:%s", typeid(T), res);
-  return res;
-}
-
-T randomNumeric(T, T2)(T2 min, T2 max) if(isNumeric!T && !is(T == T2)) {
-  auto res = unitRandom!(real);
-  res = res * max - res * min + min;
-  return clipTo!T(res);
-}
 T randomNumeric(T)() if(isNumeric!T) {
   return randomNumeric!(T)(T.min, T.max);
 }
-T randomNumeric(T)(T min, T max) if(isNumeric!T) {
-  auto res = unitRandom!(real);
-  res = res * max - res * min + min;
-  return clipTo!T(res);
+
+T randomNumeric(T)(T lo, T hi) if(isNumeric!T)
+in {
+  assert(hi >= lo);
+ } body {
+  return uniform(lo, hi, sGen);
 }
 
 T randomChar(T)() {
@@ -47,12 +40,10 @@ T randomChar(T)() {
 
 private:
 
-alias uint UIntType;
 static Random sGen;
 
 static this() {
-  sGen = Mt19937(unpredictableSeed);
-  debug(RANDOM) writefln("generator first %s", sGen.front);
+  sGen = Random(unpredictableSeed);
 }
 
 
