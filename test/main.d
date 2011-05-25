@@ -1,7 +1,4 @@
-private {
-  import qcheck._;
-  import test.utrunner;
-}
+import qcheck._;
 
 int main(string[] argv) {
   return 0;
