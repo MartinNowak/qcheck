@@ -9,5 +9,6 @@
 # build dirs
 bin*/
 lib*/
+.unittest*/
 import/
 doc/
