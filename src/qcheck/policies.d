@@ -20,8 +20,8 @@ enum Policies
 Count count(size_t val) {
   return Count(val);
 }
-Size size(size_t val) {
-  return Size(val);
+MaxAlloc maxAlloc(size_t val) {
+  return MaxAlloc(val);
 }
 MinValue minValue(T)(T val) {
   return MinValue(to!real(val));
@@ -71,14 +71,14 @@ template CountT(TL...) {
     enum CountT = CountT!(TL[1..$]);
 }
 
-template SizeT() {
-  enum SizeT = Size.init;
+template MaxAllocT() {
+  enum MaxAllocT = MaxAlloc.init;
 }
-template SizeT(TL...) {
-  static if (is(typeof(TL[0]) : Size))
-    enum SizeT = TL[0];
+template MaxAllocT(TL...) {
+  static if (is(typeof(TL[0]) : MaxAlloc))
+    enum MaxAllocT = TL[0];
   else
-    enum SizeT = SizeT!(TL[1..$]);
+    enum MaxAllocT = MaxAllocT!(TL[1..$]);
 }
 
 template MaxValueT() {
@@ -103,28 +103,16 @@ template MinValueT(TL...) {
 
 private:
 
-struct Size {
-  this(size_t val) {
-    this.val = val;
-  }
+struct MaxAlloc {
   size_t val = 100;
 }
 struct Count {
-  this(size_t val) {
-    this.val = val;
-  }
   size_t val = 100;
 }
 struct MinValue {
-  this(real val) {
-    this.val = val;
-  }
   real val = -1e6;
 }
 struct MaxValue {
-  this(real val) {
-    this.val = val;
-  }
   real val = 1e6;
 }
 

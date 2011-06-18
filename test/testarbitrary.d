@@ -207,9 +207,9 @@ version(unittest) {
 }
 unittest {
   quickCheck!(testFloat, minValue(-1000), maxValue(1000))();
-  quickCheck!(testArray!10, size(10))();
+  quickCheck!(testArray!10, maxAlloc(10))();
   quickCheck!(testFloat, Policies.AnyCtor, minValue(-1000),
               Policies.RandomizeMembers, maxValue(1000))();
   quickCheck!(testArray!5, minValue(-2), Policies.AnyCtor,
-              size(5), maxValue(4))();
+              maxAlloc(5), maxValue(4))();
 }

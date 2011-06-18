@@ -20,7 +20,7 @@ struct Builder(T, TL...)
 {
   alias PoliciesT!(TypeTuple!(TL, DefaultPolicies)) Poli;
   alias CallablesT!TL UserCtors;
-  enum SizeV = SizeT!(TL).val;
+  enum MaxAllocV = MaxAllocT!(TL).val;
   enum MinValueV = MinValueT!(TL).val;
   enum MaxValueV = MaxValueT!(TL).val;
 
@@ -139,7 +139,7 @@ struct Builder(T, TL...)
     T get() {
       alias Unqual!(typeof(T[0])) ElemT;
 
-      auto count = randomNumeric(cast(size_t)0, SizeV);
+      auto count = randomNumeric(cast(size_t)0, MaxAllocV);
       T res;
       while (count--) {
         res ~= internalGet!(ElemT)();
@@ -156,7 +156,7 @@ struct Builder(T, TL...)
       alias typeof(T.init.keys[0]) KeyT;
       alias typeof(T.init.values[0]) ValueT;
 
-      auto count = randomNumeric(cast(size_t)0, SizeV);
+      auto count = randomNumeric(cast(size_t)0, MaxAllocV);
       T res;
       while (count--) {
         auto key = internalGet!(KeyT)();
