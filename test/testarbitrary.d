@@ -76,7 +76,7 @@ unittest {
 version(unittest) {
 class TestClass {
   ClassWCtor val;
-  @property string toString() {
+  override @property string toString() {
     return "TestClass val:" ~ to!string(val);
   }
 }
