@@ -2,6 +2,7 @@ module qcheck.quickcheck;
 
 private {
   import std.conv : to;
+  import std.datetime;
   import std.traits;
   import std.typecons;
   import std.typetuple;
@@ -27,17 +28,24 @@ bool quickCheck(alias Testee, TL...)() {
   FailPair[] failingParams;
   Tuple!TP params;
 
+  StopWatch sw;
+  double totalTime = 0.0;
   while (tested < TestCount) {
     try {
       params = getArbitraryTuple!(Tuple!TP, TL)();
+      sw.reset();
+      sw.start();
       auto result = Testee(params.tupleof);
+      sw.stop();
 
       if (result == QCheckResult.Fail) {
         failingParams ~= FailPair(tested, params, Identifier!Testee ~ " false");
+        totalTime += sw.peek().hnsecs;
         ++tested;
       } else if (result == QCheckResult.Ok) {
         writef("prop %s: %s \r", Identifier!Testee, tested);
         stdout.flush();
+        totalTime += sw.peek().hnsecs;
         ++tested;
       } else if (result == QCheckResult.Reject) {
         ++rejected;
@@ -57,12 +65,14 @@ bool quickCheck(alias Testee, TL...)() {
     auto total = tested + rejected;
     writef("prop %s: passed (%s/%s), rejected (%s/%s) OK \n",
            Identifier!Testee, tested, total, rejected, total);
-    return true;
   } else {
     writef("prop %s: failed \n", Identifier!Testee);
     writeln("Failing parameters ", failingParams);
-    return false;
   }
+  if (tested)
+    writefln("avgTime:%f hnsecs", totalTime / tested);
+
+  return failingParams.length == 0;
 }
 
 private:
