@@ -38,9 +38,12 @@ struct Builder(T, TL...)
 
   T2 internalGet(T2)() {
     auto info = typeid(T2);
-    if (!this.sRecursed.find(info).empty)
-      throw new CyclicDepException("Recursive call of getArbitrary!("~
-                                   to!string(typeid(T))~")()");
+
+    foreach(ref n; this.sRecursed) {
+      if (info == n)
+        throw new CyclicDepException("Recursive call of getArbitrary!("~
+                                     to!string(typeid(T))~")()");
+    }
     this.sRecursed ~= info;
     scope(exit) this.sRecursed.popBack;
 
