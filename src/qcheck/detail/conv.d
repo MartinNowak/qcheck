@@ -11,13 +11,14 @@ private {
 /**
  * clips a source value to a target values maximal range.
  */
-T clipTo(T, S)(S value)
+T clipTo(T, S)(S src)
 {
-    static if (mostNegative!(S) < mostNegative!(T)) {
-      value = max(value, mostNegative!(T));
-    }
-    static if (S.max > T.max) {
-      value = min(value, T.max);
-    }
-    return cast(T) value;
+  Unqual!S value = src;
+  static if (mostNegative!(S) < mostNegative!(T)) {
+    value = max(value, mostNegative!(T));
+  }
+  static if (S.max > T.max) {
+    value = min(value, T.max);
+  }
+  return cast(T)value;
 }
