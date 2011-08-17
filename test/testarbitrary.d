@@ -213,3 +213,5 @@ unittest {
   quickCheck!(testArray!5, minValue(-2), Policies.AnyCtor,
               maxAlloc(5), maxValue(4))();
 }
+
+void main() {}

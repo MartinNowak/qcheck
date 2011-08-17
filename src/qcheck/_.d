@@ -1,5 +1,7 @@
 module qcheck._;
 
+pragma(build, qcheck);
+
 public:
 
 import qcheck.arbitrary;
