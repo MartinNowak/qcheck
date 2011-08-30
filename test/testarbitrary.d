@@ -202,7 +202,7 @@ version(unittest) {
     return -1000 < f && f < 1000;
   }
   bool testArray(int K)(byte[] ary) {
-    return ary.length < K;
+    return ary.length <= K;
   }
 }
 unittest {

@@ -27,7 +27,7 @@ T randomNumeric(T)(T lo, T hi) if(isNumeric!T)
 in {
   assert(hi >= lo);
  } body {
-  return hi == lo ? hi : uniform(lo, hi, sGen);
+  return hi == lo ? hi : uniform!"[]"(lo, hi, sGen);
 }
 
 T randomChar(T)() {
