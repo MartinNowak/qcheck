@@ -28,6 +28,17 @@ Tup getArbitraryTuple
   return tup;
 }
 
+T[] getArbitraryArray
+(T, TL...)
+(size_t len)
+{
+  T[] result;
+  auto builder = Builder!(T, TL)();
+  foreach(_; 0 .. len)
+    result ~= builder.get();
+  return result;
+}
+
 void setRandomSeed(uint seed) {
   qcheck.detail.random.setRandomSeed(seed);
 }
