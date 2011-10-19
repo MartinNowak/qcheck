@@ -21,5 +21,3 @@ unittest {
   a.m = 10;
   quickCheck!(dg, Policies.RandomizeMembers)();
 }
-
-void main() {}

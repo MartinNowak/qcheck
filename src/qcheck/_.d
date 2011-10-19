@@ -1,6 +1,6 @@
 module qcheck._;
 
-pragma(build, qcheck);
+// pragma(build, qcheck);
 
 public:
 

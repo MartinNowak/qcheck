@@ -72,7 +72,7 @@ struct Builder(T, TL...)
   }
 
   /**
-   * Instante a struct, choose a random ctor overload.
+   * Instantiate a struct, choose a random ctor overload.
    */
   template arbitraryL(T) if(is(T == struct)) {
     T get() {
@@ -84,7 +84,7 @@ struct Builder(T, TL...)
   }
 
   /**
-   * Instante a class, choose a random ctor overload.
+   * Instantiate a class, choose a random ctor overload.
    */
   template arbitraryL(T) if(is(T == class)) {
     T get() {
@@ -120,7 +120,7 @@ struct Builder(T, TL...)
   }
 
   /**
-   * Instante a static array.
+   * Instantiate a static array.
    */
   template arbitraryL(T) if(isStaticArray!T) {
     T get() {
@@ -136,7 +136,7 @@ struct Builder(T, TL...)
   }
 
   /**
-   * Instante an array.
+   * Instantiate an array.
    */
   template arbitraryL(T) if(isDynamicArray!T) {
     T get() {
@@ -152,7 +152,7 @@ struct Builder(T, TL...)
   }
 
   /**
-   * Instante an array.
+   * Instantiate an array.
    */
   template arbitraryL(T) if(isAssociativeArray!T) {
     T get() {
