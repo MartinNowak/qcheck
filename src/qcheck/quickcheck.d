@@ -1,95 +1,108 @@
 module qcheck.quickcheck;
 
-private {
-  import std.conv : to;
-  import std.datetime;
-  import std.traits;
-  import std.typecons;
-  import std.typetuple;
-  import std.stdio;
-  import std.exception;
-  import core.exception : AssertError;
+import std.conv, std.datetime, std.exception, std.traits, std.typecons, std.typetuple, std.stdio;
+import core.exception : AssertError;
+import qcheck.arbitrary, qcheck.config, qcheck.exceptions;
 
-  import qcheck.arbitrary;
-  import qcheck.exceptions;
-  import qcheck.policies;
-  import qcheck.predicate;
+/*
+ * Result of a testee. It is okay for a testee to return a boolean
+ * result.
+ */
+enum QCheckResult
+{
+    Discard = -1,
+    DISCARD = Discard,
+    discard = Discard,
+    Ok = true,
+    OK = Ok,
+    ok = Ok,
+    Success = Ok,
+    SUCCESS = Ok,
+    success = Ok,
+    Fail = false,
+    FAIL = Fail,
+    fail = Fail,
 }
 
-bool quickCheck(alias Testee, TL...)() {
-  alias TypeTuple!(staticMap!(Unqual, ParameterTypeTuple!Testee)) TP;
-  enum TestCount = CountT!(TL).val;
-  enum KeepGoing = hasPolicy!(Policies.KeepGoing, TL);
+bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
+{
+    alias TypeTuple!(staticMap!(Unqual, ParameterTypeTuple!Testee)) TP;
 
-  size_t tested = 0;
-  size_t rejected = 0;
-  alias Tuple!(size_t, Tuple!TP, string) FailPair;
+    size_t succeeded, failed, discarded;
 
-  FailPair[] failingParams;
-  Tuple!TP params;
+    alias Tuple!(size_t, Tuple!TP, string) FailPair;
 
-  StopWatch sw;
-  double totalTime = 0.0;
-  while (tested < TestCount) {
-    try {
-      params = getArbitraryTuple!(Tuple!TP, TL)();
-      sw.reset();
-      sw.start();
-      auto result = Testee(params.tupleof);
-      sw.stop();
+    FailPair[] failingParams;
+    Tuple!TP params;
 
-      if (result == QCheckResult.Fail) {
-        failingParams ~= FailPair(tested, params, Identifier!Testee ~ " false");
-        totalTime += sw.peek().hnsecs;
-        ++tested;
-      } else if (result == QCheckResult.Ok) {
-        writef("prop %s: %s \r", Identifier!Testee, tested);
-        stdout.flush();
-        totalTime += sw.peek().hnsecs;
-        ++tested;
-      } else if (result == QCheckResult.Reject) {
-        ++rejected;
-      }
-      else {
-        assert(0, "Unexpected return value " ~ to!string(result));
-      }
-    } catch(AssertError e) {
-      failingParams ~= FailPair(tested, params, to!string(e));
-      if (!KeepGoing) break;
-    } catch(Exception e) {
-      failingParams ~= FailPair(tested, params, to!string(e));
-      if (!KeepGoing) break;
+    StopWatch sw;
+    double totalTime = 0;
+    while (succeeded < config.maxSuccess && discarded + failed < config.maxFails)
+    {
+        try
+        {
+            params = getArbitraryTuple!(Tuple!TP, Generators)(config);
+            sw.reset();
+            sw.start();
+            auto result = Testee(params.tupleof);
+            sw.stop();
+
+            if (result == QCheckResult.Fail)
+            {
+                failingParams ~= FailPair(succeeded + failed, params, Identifier!Testee ~ " false");
+                ++failed;
+            }
+            else if (result == QCheckResult.Ok)
+            {
+                writef("prop %s: %s \r", Identifier!Testee, succeeded + failed);
+                stdout.flush();
+                totalTime += sw.peek.hnsecs;
+                ++succeeded;
+            }
+            else if (result == QCheckResult.Discard)
+            {
+                ++discarded;
+            }
+            else
+            {
+                assert(0, "Unexpected return value " ~ to!string(result));
+            }
+        }
+        catch(AssertError e)
+        {
+            failingParams ~= FailPair(succeeded + failed, params, to!string(e));
+            if (!config.keepGoing)
+                break;
+        }
+        catch(Exception e)
+        {
+            failingParams ~= FailPair(succeeded + failed, params, to!string(e));
+            if (!config.keepGoing)
+                break;
+        }
     }
-  }
-  if (failingParams.length == 0) {
-    auto total = tested + rejected;
-    writef("prop %s: passed (%s/%s), rejected (%s/%s) OK \n",
-           Identifier!Testee, tested, total, rejected, total);
-  } else {
-    writef("prop %s: failed \n", Identifier!Testee);
-    writeln("Failing parameters ", failingParams);
-  }
-  if (tested)
-    writefln("avgTime:%f hnsecs", totalTime / tested);
 
-  return failingParams.length == 0;
+    if (!failed)
+    {
+        auto total = succeeded + discarded;
+        writef("prop %s: passed (%s/%s), discarded (%s/%s) OK \n",
+               Identifier!Testee, succeeded, total, discarded, total);
+    }
+    else
+    {
+        writef("prop %s: failed \n", Identifier!Testee);
+        writeln("Failing parameters ", failingParams);
+    }
+
+    if (succeeded)
+        writefln("avgTime: %f hnsecs", totalTime / succeeded);
+
+    return failingParams.length == 0;
 }
 
 private:
 
-template Identifier(alias Testee) {
-  enum Identifier = __traits(identifier, Testee);
-}
-
-string Arguments(TP)(TP params) {
-  string res;
-  foreach (i, e; params.field) {
-    res ~= to!string(i) ~ ": " ~ to!string(e) ~ ", ";
-  }
-  return res;
-}
-
-string formatErrMessage(string identifier, string params, int count) {
-  return "\nFailed property: \"" ~ identifier ~
-    "\" at run: " ~ to!string(count) ~ " with arguments\n" ~ params;
+template Identifier(alias Testee)
+{
+    enum Identifier = __traits(identifier, Testee);
 }

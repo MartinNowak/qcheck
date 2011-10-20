@@ -1,19 +1,17 @@
 module qcheck.exceptions;
 
-private {
-  import std.conv : to;
-
-  import core.exception;
+class CyclicDependencyException : Exception
+{
+    this(string s, string file=__FILE__, size_t line=__LINE__)
+    {
+        super(s, file, line);
+    }
 }
 
-class CyclicDepException : Exception {
-  this(string s) {
-    super(s);
-  }
-}
-
-class PropertyException : Exception {
-  this(string s) {
-    super(s);
-  }
+class PropertyException : Exception
+{
+    this(string s, string file=__FILE__, size_t line=__LINE__)
+    {
+        super(s, file, line);
+    }
 }

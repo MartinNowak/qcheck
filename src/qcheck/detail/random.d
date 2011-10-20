@@ -12,8 +12,9 @@ private {
   import qcheck.detail.conv;
 }
 
-void setRandomSeed(uint seed) {
-  sGen = Random(seed);
+@property void randomSeed(uint seed)
+{
+    sGen = Random(seed);
 }
 
 package:
@@ -42,10 +43,10 @@ private:
 
 static Random sGen;
 
-static this() {
-  sGen = Random(unpredictableSeed);
+static this()
+{
+    sGen = Random(unpredictableSeed);
 }
-
 
 unittest {
   auto GenBackup = sGen.save();

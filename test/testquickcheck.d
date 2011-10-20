@@ -1,23 +1,26 @@
-private {
-  import qcheck._;
-}
+import qcheck._;
 
-version(unittest) {
-  struct A {
-    byte m;
-    bool testMe(A a2) const {
-      return &this != &a2;
+unittest
+{
+    static struct A
+    {
+        byte m;
+        bool testMe(A a2) const
+        {
+            return &this != &a2;
+        }
     }
-  }
-  bool testFunc(A a1, A a2) {
-    return &a1 != &a2;
-  }
-}
 
-unittest {
-  quickCheck!(testFunc, Policies.RandomizeMembers)();
-  A a;
-  auto dg = &a.testMe;
-  a.m = 10;
-  quickCheck!(dg, Policies.RandomizeMembers)();
+    static bool testFunc(A a1, A a2)
+    {
+        return &a1 != &a2;
+    }
+
+    Config config;
+    config.randomizeFields = true;
+    quickCheck!(testFunc)(config);
+    A a;
+    auto dg = &a.testMe;
+    a.m = 10;
+    quickCheck!(dg)(config);
 }

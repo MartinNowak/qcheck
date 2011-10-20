@@ -6,6 +6,5 @@ public:
 
 import qcheck.arbitrary;
 import qcheck.exceptions;
-import qcheck.policies;
-import qcheck.predicate;
+import qcheck.config;
 import qcheck.quickcheck;
