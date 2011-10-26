@@ -37,6 +37,10 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
 
     StopWatch sw;
     double totalTime = 0;
+    writefln("======== prop %s (%d) ========", Identifier!Testee, config.maxSuccess);
+    write("[                                                                ]\r");
+    write("[");
+    ushort progress;
     while (succeeded < config.maxSuccess && discarded + failed < config.maxFails)
     {
         try
@@ -54,10 +58,16 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
             }
             else if (result == QCheckResult.Ok)
             {
-                writef("prop %s: %s \r", Identifier!Testee, succeeded + failed);
-                stdout.flush();
                 totalTime += sw.peek.hnsecs;
                 ++succeeded;
+                if (progress < 64 * succeeded / config.maxSuccess)
+                {
+                    do
+                    {
+                        write("=");
+                    } while (++progress < 64 * succeeded / config.maxSuccess);
+                    stdout.flush();
+                }
             }
             else if (result == QCheckResult.Discard)
             {
@@ -81,16 +91,17 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
                 break;
         }
     }
+    writeln();
 
     if (!failed)
     {
         auto total = succeeded + discarded;
-        writef("prop %s: passed (%s/%s), discarded (%s/%s) OK \n",
-               Identifier!Testee, succeeded, total, discarded, total);
+        writefln("OK success (%s/%s), discarded (%s/%s)",
+               succeeded, total, discarded, total);
     }
     else
     {
-        writef("prop %s: failed \n", Identifier!Testee);
+        writefln("prop %s: failed", Identifier!Testee);
         writeln("Failing parameters ", failingParams);
     }
 
