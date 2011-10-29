@@ -127,7 +127,7 @@ unittest
 {
     auto cl = getArbitrary!TestClass();
     assert(cl.val is null);
-    Config config = { randomizeFields : true, };
+    auto config = Config().randomizeFields(true);
     cl = getArbitrary!(TestClass)(config);
     assert(!(cl.val is null));
 }
@@ -206,7 +206,7 @@ unittest
     bool succeeded = false;
     try
     {
-        Config config = { randomizeFields : true, };
+        auto config = Config().randomizeFields(true);
         auto val = getArbitrary!(Entry)(config);
     }
     catch (CyclicDependencyException e)
@@ -253,7 +253,7 @@ unittest
     auto val = getArbitrary!(UserStruct, generator)();
     assert(val.val == 10);
 
-    Config config = { randomizeFields : true, };
+    auto config = Config().randomizeFields(true);
 
     auto val2 = getArbitrary!(UserStructHolder, generator)(config);
     assert(val2.val.val == 10);
