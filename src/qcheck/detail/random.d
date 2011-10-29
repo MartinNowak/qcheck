@@ -35,7 +35,7 @@ T randomChar(T)() {
   T res;
   do {
     res = clipTo!T(randomNumeric(cast(uint)T.min, cast(uint)T.max));
-  } while (res == T.init);
+  } while (!std.utf.isValidDchar(res));
   return res;
 }
 
