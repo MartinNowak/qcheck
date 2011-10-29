@@ -144,7 +144,7 @@ struct Builder(T, Generators...)
             while (count--)
             {
                 ElemT e = internalGet!(ElemT)();
-                move(e, res[count]);
+                res[count] = e;
             }
             return res;
         }
