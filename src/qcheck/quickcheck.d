@@ -35,21 +35,18 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
     FailPair[] failingParams;
     Tuple!TP params;
 
-    StopWatch sw;
-    double totalTime = 0;
-    writefln("======== prop %s (%d) ========", Identifier!Testee, config.maxSuccess);
-    write("[                                                                ]\r");
-    write("[");
+    string head = Identifier!Testee;
+    if (head.length > 16)
+        head = head[0 .. 13] ~ "...";
+    writef("CHECK: %-16s [                                                  ]\r", head);
+    writef("CHECK: %-16s [", head);
     ushort progress;
     while (succeeded < config.maxSuccess && discarded + failed < config.maxFails)
     {
         try
         {
             params = getArbitraryTuple!(Tuple!TP, Generators)(config);
-            sw.reset();
-            sw.start();
             auto result = Testee(params.tupleof);
-            sw.stop();
 
             if (result == QCheckResult.Fail)
             {
@@ -58,14 +55,13 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
             }
             else if (result == QCheckResult.Ok)
             {
-                totalTime += sw.peek.hnsecs;
                 ++succeeded;
-                if (progress < 64 * succeeded / config.maxSuccess)
+                if (progress < 50 * succeeded / config.maxSuccess)
                 {
                     do
                     {
                         write("=");
-                    } while (++progress < 64 * succeeded / config.maxSuccess);
+                    } while (++progress < 50 * succeeded / config.maxSuccess);
                     stdout.flush();
                 }
             }
@@ -91,22 +87,22 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
                 break;
         }
     }
-    writeln();
 
-    if (!failed)
+    if (!failed && !discarded)
+    {
+        writeln("] OK");
+    }
+    else if (!failed)
     {
         auto total = succeeded + discarded;
-        writefln("OK success (%s/%s), discarded (%s/%s)",
-               succeeded, total, discarded, total);
+        writeln("] OK (%s/%s)",
+                 discarded, total);
     }
     else
     {
-        writefln("prop %s: failed", Identifier!Testee);
-        writeln("Failing parameters ", failingParams);
+        writeln("] FAIL");
+        writeln("Failing parameters: ", failingParams);
     }
-
-    if (succeeded)
-        writefln("avgTime: %f hnsecs", totalTime / succeeded);
 
     return failingParams.length == 0;
 }
