@@ -77,12 +77,14 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
         catch(AssertError e)
         {
             failingParams ~= FailPair(succeeded + failed, params, to!string(e));
+            ++failed;
             if (!config.keepGoing)
                 break;
         }
         catch(Exception e)
         {
             failingParams ~= FailPair(succeeded + failed, params, to!string(e));
+            ++failed;
             if (!config.keepGoing)
                 break;
         }
