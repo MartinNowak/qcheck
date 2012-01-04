@@ -90,15 +90,16 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
         }
     }
 
-    if (!failed && !discarded)
+    if (!failed && succeeded == config.maxSuccess)
     {
         writeln("] OK");
     }
     else if (!failed)
     {
+        assert(succeeded < config.maxSuccess);
         auto total = succeeded + discarded;
-        writeln("] OK (%s/%s)",
-                 discarded, total);
+        writefln("] FAIL (%s/%s)", succeeded, total);
+        writeln("Giving up after too many discards.");
     }
     else
     {
