@@ -133,7 +133,7 @@ struct Builder(T, Generators...)
     /**
      * Instantiate a static array.
      */
-    template arbitraryL(T) if(isStaticArray!T)
+    template arbitraryL(T) if(isStaticArray!T && !is(T == struct))
     {
         T get()
         {
