@@ -22,6 +22,12 @@ struct Builder(T, Generators...)
         return internalGet!(T)();
     }
 
+    /**
+     * Construct a randomized Tuple of T.
+     */
+    alias constructTuple getTuple;
+
+private:
     T2 internalGet(T2)()
     {
         auto info = typeid(T2);
@@ -259,8 +265,6 @@ struct Builder(T, Generators...)
             return internalGet!(typeof(T.re))() + 1i * internalGet!(typeof(T.im))();
         }
     }
-
-private:
 
     // struct instantiation helper
     T newStructInstance(T)()

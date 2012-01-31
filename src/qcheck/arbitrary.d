@@ -13,7 +13,7 @@ Tup getArbitraryTuple(Tup, Generators...)(Config config=Config.init)
 {
     Tup tup;
     auto builder = Builder!(Tup, Generators)(config);
-    builder.initTuple(tup.tupleof);
+    tup = builder.getTuple!(typeof(tup.tupleof))();
     return tup;
 }
 
