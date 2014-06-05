@@ -6,19 +6,12 @@ struct Config
 {
     enum Ctors { Any, DefaultOnly, }
 
-    mixin template Property(T, string name, T init=T.init)
-    {
-        mixin(`@property T `~name~`() const { return _`~name~`; }`);
-        mixin(`@property Config `~name~`(T val) { _`~name~` = val; return this; }`);
-        mixin(`T _`~name~` = init;`);
-    }
-
-    mixin Property!(Ctors, "ctors");
-    mixin Property!(bool, "randomizeFields");
-    mixin Property!(bool, "keepGoing");
-    mixin Property!(size_t, "maxSuccess", 100);
-    mixin Property!(size_t, "maxFails", 100);
-    mixin Property!(size_t, "maxSize", 100);
-    mixin Property!(double, "minValue", -1e6);
-    mixin Property!(double, "maxValue", 1e6);
+    Ctors ctors; /// restrict usage of constructors
+    bool randomizeFields = true; /// random initialize test data
+    bool keepGoing; /// continue on test error
+    size_t maxSuccess = 100; /// stop test after maxSuccess
+    size_t maxFails = 100; /// stop test after maxFails
+    size_t maxSize = 100; /// maximal random number of array elements tested
+    double minValue = -1e6; /// minimal random number tested
+    double maxValue = 1e6; /// maximal random number tested
 }

@@ -1,0 +1,9 @@
+{
+    "name": "qcheck",
+    "description": "A library for automatic randomized testing.",
+    "copyright": "Copyright © 2010-, Martin Nowak",
+    "authors": ["Martin Nowak"],
+    "license": "MIT",
+    "dependencies": {
+    }
+}

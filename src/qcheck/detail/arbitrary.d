@@ -143,7 +143,7 @@ private:
     {
         T get()
         {
-            alias Unqual!(typeof(T[0])) ElemT;
+            alias Unqual!(typeof(T.init[0])) ElemT;
 
             auto count = T.length;
             T res = void;
@@ -163,7 +163,7 @@ private:
     {
         T get()
         {
-            alias Unqual!(typeof(T[0])) ElemT;
+            alias Unqual!(typeof(T.init[0])) ElemT;
 
             auto count = randomNumeric(cast(size_t)0, _config.maxSize);
             T res;
@@ -210,7 +210,7 @@ private:
   /**
    * Default numerical types
    */
-  template arbitraryL(T) if(isNumeric!T)
+  template arbitraryL(T) if(isNumeric!T && !is(T == enum))
   {
       T get()
       {
@@ -269,21 +269,20 @@ private:
     // struct instantiation helper
     T newStructInstance(T)()
     {
-        if (_config.ctors == Config.Ctors.DefaultOnly)
+        alias ctorOverloadSet!(T) overloads;
+
+        final switch (_config.ctors)
         {
-            static if (is(typeof(T())))
+        case Config.Ctors.Any:
+            auto which = overloads.length ? randomNumeric(cast(size_t)0, overloads.length - 1) : 0;
+            return callStructCtorOverload!(T, overloads)(which);
+
+        case Config.Ctors.DefaultOnly:
+            static if (!is(typeof(T())))
                 assert(0, "Can't default construct a " ~ T.stringof);
             else
                 return T();
         }
-        else if (_config.ctors == Config.Ctors.Any)
-        {
-            alias ctorOverloadSet!(T) overloads;
-            auto which = overloads.length ? randomNumeric(cast(size_t)0, overloads.length - 1) : 0;
-            return callStructCtorOverload!(T, overloads)(which);
-        }
-        else
-            assert(0);
     }
 
     T callStructCtorOverload(T, Overloads...)(size_t idx)
@@ -320,21 +319,20 @@ private:
     // class instantiation helper
     T newClassInstance(T)()
     {
-        if (_config.ctors == Config.Ctors.DefaultOnly)
+        alias ctorOverloadSet!(T) overloads;
+
+        final switch (_config.ctors)
         {
+        case Config.Ctors.Any:
+            auto which = overloads.length ? randomNumeric(cast(size_t)0,  overloads.length - 1) : 0;
+            return callClassCtorOverload!(T, overloads)(which);
+
+        case Config.Ctors.DefaultOnly:
             static if (!is(typeof(new T())))
                 assert(0, "Can't default construct class " ~ T.stringof);
             else
                 return new T();
         }
-        else if (_config.ctors == Config.Ctors.Any)
-        {
-            alias ctorOverloadSet!(T) overloads;
-            auto which = overloads.length ? randomNumeric(cast(size_t)0,  overloads.length - 1) : 0;
-            return callClassCtorOverload!(T, overloads)(which);
-        }
-        else
-            assert(0);
     }
 
     T callClassCtorOverload(T)(size_t idx)
