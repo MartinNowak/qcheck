@@ -10,18 +10,9 @@ import qcheck.arbitrary, qcheck.config, qcheck.exceptions;
  */
 enum QCheckResult
 {
-    Discard = -1,
-    DISCARD = Discard,
-    discard = Discard,
-    Ok = true,
-    OK = Ok,
-    ok = Ok,
-    Success = Ok,
-    SUCCESS = Ok,
-    success = Ok,
-    Fail = false,
-    FAIL = Fail,
-    fail = Fail,
+    discard = -1,
+    ok = true,
+    fail = false,
 }
 
 bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
@@ -48,12 +39,12 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
             params = getArbitraryTuple!(Tuple!TP, Generators)(config);
             auto result = Testee(params.tupleof);
 
-            if (result == QCheckResult.Fail)
+            if (result == QCheckResult.fail)
             {
                 failingParams ~= FailPair(succeeded + failed, params, Identifier!Testee ~ " false");
                 ++failed;
             }
-            else if (result == QCheckResult.Ok)
+            else if (result == QCheckResult.ok)
             {
                 ++succeeded;
                 if (progress < 50 * succeeded / config.maxSuccess)
@@ -65,7 +56,7 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
                     stdout.flush();
                 }
             }
-            else if (result == QCheckResult.Discard)
+            else if (result == QCheckResult.discard)
             {
                 ++discarded;
             }
