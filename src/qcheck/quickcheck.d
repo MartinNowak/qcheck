@@ -95,7 +95,9 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
     else
     {
         writeln("] FAIL");
-        writeln("Failing parameters: ", failingParams);
+        writeln("Failing Parameters:");
+        foreach (p; failingParams)
+            writefln("======== %s ========\n%s\n%s", p[]);
     }
 
     return failingParams.length == 0;
