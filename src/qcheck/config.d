@@ -11,6 +11,7 @@ struct Config
     bool keepGoing; /// continue on test error
     size_t maxSuccess = 100; /// stop test after maxSuccess
     size_t maxFails = 100; /// stop test after maxFails
+    size_t maxDiscarded = 100; /// stop test after maxDiscarded
     size_t maxSize = 100; /// maximal random number of array elements tested
     double minValue = -1e6; /// minimal random number tested
     double maxValue = 1e6; /// maximal random number tested

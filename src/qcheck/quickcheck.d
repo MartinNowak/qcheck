@@ -41,7 +41,7 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
     writef("CHECK: %-16s [                                                  ]\r", head);
     writef("CHECK: %-16s [", head);
     ushort progress;
-    while (succeeded < config.maxSuccess && discarded + failed < config.maxFails)
+    while (succeeded < config.maxSuccess && discarded < config.maxDiscarded && failed < config.maxFails)
     {
         try
         {
