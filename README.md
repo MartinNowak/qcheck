@@ -3,21 +3,20 @@ qcheck [![Build Status](https://travis-ci.org/MartinNowak/qcheck.png?branch=mast
 
 A library for automatic randomized testing.
 
-==== Usage
+### Usage
 
-```
+```d
+int[] mysort(int[] arr)
+{
+    // ...
+    return arr;
+}
+
 unittest
 {
     import qcheck;
+    import std.algorithm;
 
-    static void testSort(int[] arr)
-    {
-        import std.algorithm;
-        auto res = sort(arr);
-        foreach (i; 1 .. res.length)
-            assert(res[i-1] <= res[i]);
-    }
-
-    qcheck!testSort();
+    quickCheck!((int[] a) => assert(equal(sort(arr.dup), mysort(arr.dup))));
 }
 ```
