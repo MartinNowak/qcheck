@@ -1,2 +1,3 @@
 language: d
 sudo: false
+d: dmd-2.068.2-b1
