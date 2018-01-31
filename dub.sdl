@@ -1,0 +1,5 @@
+name "qcheck"
+description "A library for automatic randomized testing."
+authors "Martin Nowak"
+copyright "Copyright © 2010-, Martin Nowak"
+license "MIT"
