@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>http://127.0.0.1/index.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/arbitrary.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/arbitrary/getArbitrary.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/arbitrary/getArbitraryArray.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/arbitrary/getArbitraryTuple.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.ctors.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.keepGoing.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.maxDiscarded.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.maxFails.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.maxSize.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.maxSuccess.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.maxValue.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.minValue.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/config/Config.randomizeFields.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/quickcheck.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/quickcheck/QCheckResult.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck/quickcheck/quickCheck.html</loc></url>
+<url><loc>http://127.0.0.1/qcheck.html</loc></url>
+</urlset>

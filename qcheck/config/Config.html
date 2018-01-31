@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Struct Config</title>
+		<link rel="stylesheet" href="../../css/style.min.css"/>
+		<script type="text/javascript" src="../../js/script.min.js"></script>
+	</head>
+	<body onload="setupDdox();">
+		<header></header>
+		<nav id="main-nav">
+			<div>
+				<noscript>
+					<p style="color: red">The search functionality needs JavaScript enabled</p>
+				</noscript>
+				<div id="symbolSearchPane" style="display: none">
+					<form action="#" method="GET">
+						<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(24);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" autofocus/>
+					</form>
+					<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+document.getElementById('symbolSearchPane').style.display = 'block';</script>
+				</div>
+				<ul class="tree-view">
+					<li class="tree-view ">
+						<div class="package ">
+							<a href="../../qcheck.html">qcheck</a>
+						</div>
+				<ul class="tree-view">
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/arbitrary.html">arbitrary</a>
+						</div>
+					</li>
+					<li>
+						<div class="module selected">
+							<a href="../../qcheck/config.html">config</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/quickcheck.html">quickcheck</a>
+						</div>
+					</li>
+				</ul>
+					</li>
+				</ul>
+			</div>
+			<p id="main-nav-footer">
+				Built with
+				<a href="https://github.com/MartinNowak/scod">scod</a>
+			</p>
+		</nav>
+		<div id="main-contents">
+			<div>
+				<h1>Struct Config</h1><p></p>
+				<div class="prototype">
+					<code class="lang-d">
+						<div class="single-prototype">
+				<span class="kwd">struct</span> <span class="typ">Config</span>
+				<span class="pun">;</span>
+						</div>
+					</code>
+				</div>
+				
+				<section><h2>Fields</h2>
+					<table>
+						<col class="caption"/>
+						<tr>
+							<th>Name</th><th>Type</th><th>Description</th>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.ctors.html" class="public"><code>ctors</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="pln">qcheck<wbr/></span><span class="pun">.</span><span class="pln">config<wbr/></span><span class="pun">.</span><span class="typ">Config<wbr/></span><span class="pun">.</span><span class="typ">Ctors</span></code></td><td>restrict usage of constructors
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.keepGoing.html" class="public"><code>keepGoing</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>continue on test error
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.maxDiscarded.html" class="public"><code>maxDiscarded</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">ulong</span></code></td><td>stop test after maxDiscarded
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.maxFails.html" class="public"><code>maxFails</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">ulong</span></code></td><td>stop test after maxFails
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.maxSize.html" class="public"><code>maxSize</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">ulong</span></code></td><td>maximal random number of array elements tested
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.maxSuccess.html" class="public"><code>maxSuccess</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">ulong</span></code></td><td>stop test after maxSuccess
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.maxValue.html" class="public"><code>maxValue</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">double</span></code></td><td>maximal random number tested
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.minValue.html" class="public"><code>minValue</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">double</span></code></td><td>minimal random number tested
+</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="../../qcheck/config/Config.randomizeFields.html" class="public"><code>randomizeFields</code></a>
+							</td>
+							<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>random initialize test data
+</td>
+						</tr>
+					</table>
+				</section>
+				
+			</div>
+			<footer>
+				<div id="license-info">
+					
+					
+					
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>

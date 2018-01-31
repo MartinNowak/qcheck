@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Function quickCheck</title>
+		<link rel="stylesheet" href="../../css/style.min.css"/>
+		<script type="text/javascript" src="../../js/script.min.js"></script>
+	</head>
+	<body onload="setupDdox();">
+		<header></header>
+		<nav id="main-nav">
+			<div>
+				<noscript>
+					<p style="color: red">The search functionality needs JavaScript enabled</p>
+				</noscript>
+				<div id="symbolSearchPane" style="display: none">
+					<form action="#" method="GET">
+						<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(24);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" autofocus/>
+					</form>
+					<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+document.getElementById('symbolSearchPane').style.display = 'block';</script>
+				</div>
+				<ul class="tree-view">
+					<li class="tree-view ">
+						<div class="package ">
+							<a href="../../qcheck.html">qcheck</a>
+						</div>
+				<ul class="tree-view">
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/arbitrary.html">arbitrary</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/config.html">config</a>
+						</div>
+					</li>
+					<li>
+						<div class="module selected">
+							<a href="../../qcheck/quickcheck.html">quickcheck</a>
+						</div>
+					</li>
+				</ul>
+					</li>
+				</ul>
+			</div>
+			<p id="main-nav-footer">
+				Built with
+				<a href="https://github.com/MartinNowak/scod">scod</a>
+			</p>
+		</nav>
+		<div id="main-contents">
+			<div>
+				<h1>Function quickCheck</h1><p>Feed testee with arbitrary data to check that it behaves correctly.
+</p>
+				<div class="prototype">
+					<code class="lang-d">
+						<div class="single-prototype">
+				<span class="typ">bool</span> <span class="pln">quickCheck</span>(alias Testee, Generators...)
+				<span class="pun">(</span>
+				<br/>
+				&nbsp;&nbsp;<a href="../../qcheck/config/Config.html"><span class="typ">Config</span></a> <span class="pln">config</span> <span class="pun">=</span> <span class="typ">Config<wbr/></span><span class="pun">.</span><span class="pln">init</span>
+				<br/>
+				<span class="pun">)</span><span class="pun">;</span>
+						</div>
+					</code>
+				</div>
+				
+				<section><h2>Example</h2>
+<p>comparing sort algorithms
+</p>
+<pre class="code"><code class="lang-d"><span class="com">// https://rosettacode.org/wiki/Sorting_algorithms/Bubble_sort#D
+</span><span class="kwd">static </span><span class="pln">T</span><span class="pun">[] </span><span class="pln">bubbleSort</span><span class="pun">(</span><span class="pln">T</span><span class="pun">)(</span><span class="pln">T</span><span class="pun">[] </span><span class="pln">data</span><span class="pun">) </span><span class="kwd">pure nothrow
+</span><span class="pun">{
+    </span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm </span><span class="pun">: </span><span class="pln">swap</span><span class="pun">;
+    </span><span class="kwd">foreach_reverse </span><span class="pun">(</span><span class="pln">n</span><span class="pun">; </span><span class="lit">0 </span><span class="pun">.. </span><span class="pln">data<wbr/></span><span class="pun">.</span><span class="pln">length</span><span class="pun">)
+    {
+        </span><span class="typ">bool </span><span class="pln">swapped</span><span class="pun">;
+        </span><span class="kwd">foreach </span><span class="pun">(</span><span class="pln">i</span><span class="pun">; </span><span class="lit">0 </span><span class="pun">.. </span><span class="pln">n</span><span class="pun">)
+            </span><span class="kwd">if </span><span class="pun">(</span><span class="pln">data</span><span class="pun">[</span><span class="pln">i</span><span class="pun">] &gt; </span><span class="pln">data</span><span class="pun">[</span><span class="pln">i </span><span class="pun">+ </span><span class="lit">1</span><span class="pun">]) {
+                </span><span class="pln">swap</span><span class="pun">(</span><span class="pln">data</span><span class="pun">[</span><span class="pln">i</span><span class="pun">], </span><span class="pln">data</span><span class="pun">[</span><span class="pln">i </span><span class="pun">+ </span><span class="lit">1</span><span class="pun">]);
+                </span><span class="pln">swapped </span><span class="pun">= </span><span class="kwd">true</span><span class="pun">;
+            }
+        </span><span class="kwd">if </span><span class="pun">(!</span><span class="pln">swapped</span><span class="pun">)
+            </span><span class="kwd">break</span><span class="pun">;
+    }
+    </span><span class="kwd">return </span><span class="pln">data</span><span class="pun">;
+}
+
+</span><span class="com">/// random data is injected into testee arguments
+</span><span class="kwd">static </span><span class="typ">bool </span><span class="pln">testee</span><span class="pun">(</span><span class="typ">ubyte</span><span class="pun">[] </span><span class="pln">data</span><span class="pun">)
+{
+    </span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm </span><span class="pun">: </span><span class="pln">equal</span><span class="pun">, </span><span class="pln">sort</span><span class="pun">;
+
+    </span><span class="kwd">return </span><span class="pln">bubbleSort</span><span class="pun">(</span><span class="pln">data<wbr/></span><span class="pun">.</span><span class="pln">dup</span><span class="pun">)<wbr/>.</span><span class="pln">equal</span><span class="pun">(</span><span class="pln">data<wbr/></span><span class="pun">.</span><span class="pln">sort</span><span class="pun">());
+}
+
+</span><span class="pln">quickCheck</span><span class="pun">!</span><span class="pln">testee</span><span class="pun">;
+</span></code></pre>
+</section>
+<section><h2>Example</h2>
+<p>testee can reject random arguments to enforce additional constraints
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">static <a href="../../qcheck/quickcheck/QCheckResult.html"></span><span class="typ">QCheckResult</span></a><span class="pln"> testee</span><span class="pun">(</span><span class="typ">string </span><span class="pln">haystack</span><span class="pun">, </span><span class="typ">string </span><span class="pln">needle</span><span class="pun">)
+{
+    </span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm </span><span class="pun">: </span><span class="pln">canFind</span><span class="pun">, </span><span class="pln">boyerMooreFinder</span><span class="pun">;
+
+    </span><span class="kwd">if </span><span class="pun">(</span><span class="pln">needle<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">&lt; </span><span class="pln">haystack<wbr/></span><span class="pun">.</span><span class="pln">length</span><span class="pun">)
+        </span><span class="kwd">return <a href="../../qcheck/quickcheck/QCheckResult.html#discard"></span><span class="typ">QCheckResult<wbr/></span><span class="pun">.</span><span class="pln">discard</span></a><span class="pun">;
+
+    </span><span class="kwd">auto </span><span class="pln">bmFinder </span><span class="pun">= </span><span class="pln">boyerMooreFinder</span><span class="pun">(</span><span class="pln">needle</span><span class="pun">);
+    </span><span class="kwd">immutable </span><span class="pln">found </span><span class="pun">= !!</span><span class="pln">bmFinder<wbr/></span><span class="pun">.</span><span class="pln">beFound</span><span class="pun">(</span><span class="pln">haystack</span><span class="pun">)<wbr/>.</span><span class="pln">length</span><span class="pun">;
+    </span><span class="kwd">return </span><span class="pln">found </span><span class="pun">== </span><span class="pln">haystack<wbr/></span><span class="pun">.</span><span class="pln">canFind</span><span class="pun">(</span><span class="pln">needle</span><span class="pun">) ? <a href="../../qcheck/quickcheck/QCheckResult.html#pass"></span><span class="typ">QCheckResult<wbr/></span><span class="pun">.</span><span class="pln">pass</span></a><span class="pln"> </span><span class="pun">: <a href="../../qcheck/quickcheck/QCheckResult.html#fail"></span><span class="typ">QCheckResult<wbr/></span><span class="pun">.</span><span class="pln">fail</span></a><span class="pun">;
+}
+
+</span><span class="pln">randomSeed </span><span class="pun">= </span><span class="lit">42</span><span class="pun">;
+</span><span class="pln">quickCheck</span><span class="pun">!</span><span class="pln">testee</span><span class="pun">;
+</span></code></pre>
+</section>
+
+			</div>
+			<footer>
+				<div id="license-info">
+					
+					
+					
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>

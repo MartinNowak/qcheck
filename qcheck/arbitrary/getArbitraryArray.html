@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Function getArbitraryArray</title>
+		<link rel="stylesheet" href="../../css/style.min.css"/>
+		<script type="text/javascript" src="../../js/script.min.js"></script>
+	</head>
+	<body onload="setupDdox();">
+		<header></header>
+		<nav id="main-nav">
+			<div>
+				<noscript>
+					<p style="color: red">The search functionality needs JavaScript enabled</p>
+				</noscript>
+				<div id="symbolSearchPane" style="display: none">
+					<form action="#" method="GET">
+						<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(24);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" autofocus/>
+					</form>
+					<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+document.getElementById('symbolSearchPane').style.display = 'block';</script>
+				</div>
+				<ul class="tree-view">
+					<li class="tree-view ">
+						<div class="package ">
+							<a href="../../qcheck.html">qcheck</a>
+						</div>
+				<ul class="tree-view">
+					<li>
+						<div class="module selected">
+							<a href="../../qcheck/arbitrary.html">arbitrary</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/config.html">config</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/quickcheck.html">quickcheck</a>
+						</div>
+					</li>
+				</ul>
+					</li>
+				</ul>
+			</div>
+			<p id="main-nav-footer">
+				Built with
+				<a href="https://github.com/MartinNowak/scod">scod</a>
+			</p>
+		</nav>
+		<div id="main-contents">
+			<div>
+				<h1>Function getArbitraryArray</h1><p>Randomly initialize an array of <code class="lang-d"><a href="../qcheck/arbitrary/getArbitraryArray.html#len"><span class="pln"><a href="../../qcheck/arbitrary/getArbitraryArray.html#len"><span class="pln">len</span></a></span></a></code>
+</p>
+				<div class="prototype">
+					<code class="lang-d">
+						<div class="single-prototype">
+				<span class="pln">T</span><span class="pun">[]</span> <span class="pln">getArbitraryArray</span>(T, Generators...)
+				<span class="pun">(</span>
+				<br/>
+				&nbsp;&nbsp;<span class="pln">size_t</span> <span class="pln">len</span><span class="pun">,</span>
+				<br/>
+				&nbsp;&nbsp;<a href="../../qcheck/config/Config.html"><span class="typ">Config</span></a> <span class="pln">config</span> <span class="pun">=</span> <span class="typ">Config<wbr/></span><span class="pun">.</span><span class="pln">init</span>
+				<br/>
+				<span class="pun">)</span><span class="pun">;</span>
+						</div>
+					</code>
+				</div>
+				<section></section>
+
+				<section><h2>See also</h2>
+<p>getArbitrary
+</p>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">static struct </span><span class="pln">S
+</span><span class="pun">{
+    </span><span class="typ">string </span><span class="pln">name</span><span class="pun">; </span><span class="com">// fields are randomized by default
+</span><span class="pun">}
+
+</span><span class="kwd">assert</span><span class="pun">(<a href="../../qcheck/arbitrary/getArbitrary.html"></span><span class="pln">getArbitrary</span></a><span class="pun">!</span><span class="pln">S</span><span class="pun">()<wbr/>.</span><span class="pln">name </span><span class="pun">!= <a href="../../qcheck/arbitrary/getArbitrary.html"></span><span class="pln">getArbitrary</span></a><span class="pun">!</span><span class="pln">S</span><span class="pun">()<wbr/>.</span><span class="pln">name</span><span class="pun">);
+</span></code></pre>
+</section>
+<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">enum </span><span class="typ">Enum
+</span><span class="pun">{
+    </span><span class="pln">A </span><span class="pun">= </span><span class="lit">10</span><span class="pun">,
+    </span><span class="pln">B </span><span class="pun">= </span><span class="lit">20</span><span class="pun">,
+    </span><span class="pln">C </span><span class="pun">= </span><span class="lit">30</span><span class="pun">,
+    </span><span class="pln">D </span><span class="pun">= </span><span class="lit">40</span><span class="pun">,
+}
+
+</span><span class="typ">Enum </span><span class="pln">val </span><span class="pun">= <a href="../../qcheck/arbitrary/getArbitrary.html"></span><span class="pln">getArbitrary</span></a><span class="pun">!</span><span class="typ">Enum</span><span class="pun">();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="kwd">cast</span><span class="pun">(</span><span class="typ">int</span><span class="pun">)</span><span class="pln">val </span><span class="pun">% </span><span class="lit">10 </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);
+</span></code></pre>
+</section>
+
+			</div>
+			<footer>
+				<div id="license-info">
+					
+					
+					
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>

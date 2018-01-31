@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Module qcheck.arbitrary</title>
+		<link rel="stylesheet" href="../css/style.min.css"/>
+		<script type="text/javascript" src="../js/script.min.js"></script>
+	</head>
+	<body onload="setupDdox();">
+		<header></header>
+		<nav id="main-nav">
+			<div>
+				<noscript>
+					<p style="color: red">The search functionality needs JavaScript enabled</p>
+				</noscript>
+				<div id="symbolSearchPane" style="display: none">
+					<form action="#" method="GET">
+						<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(24);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" autofocus/>
+					</form>
+					<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../";
+document.getElementById('symbolSearchPane').style.display = 'block';</script>
+				</div>
+				<ul class="tree-view">
+					<li class="tree-view ">
+						<div class="package ">
+							<a href="../qcheck.html">qcheck</a>
+						</div>
+				<ul class="tree-view">
+					<li>
+						<div class="module selected">
+							<a href="../qcheck/arbitrary.html">arbitrary</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../qcheck/config.html">config</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../qcheck/quickcheck.html">quickcheck</a>
+						</div>
+					</li>
+				</ul>
+					</li>
+				</ul>
+			</div>
+			<p id="main-nav-footer">
+				Built with
+				<a href="https://github.com/MartinNowak/scod">scod</a>
+			</p>
+		</nav>
+		<div id="main-contents">
+			<div>
+				<h1>Module qcheck.arbitrary</h1><p>generate arbitrary random data
+</p>
+				<section></section>
+				<section>
+					<h2>Functions</h2>
+					<table>
+						<col class="caption"/>
+						<tr>
+							<th>Name</th><th>Description</th>
+						</tr>
+						<tr>
+							<td>
+								<code>
+									<a id="getArbitrary" class="public" href="../qcheck/arbitrary/getArbitrary.html">getArbitrary</a><span class="decoration">(config)</span>
+								</code>
+							</td>
+							<td>Get a random value of type <code class="lang-d"><span class="pln">T</span></code>.
+   Randomly generates necessary ctor arguments.
+</td>
+						</tr>
+						<tr>
+							<td>
+								<code>
+									<a id="getArbitraryArray" class="public" href="../qcheck/arbitrary/getArbitraryArray.html">getArbitraryArray</a><span class="decoration">(len, config)</span>
+								</code>
+							</td>
+							<td>Randomly initialize an array of <code class="lang-d"><a href="../qcheck/arbitrary/getArbitraryArray.html#len"><span class="pln">len</span></a></code>
+</td>
+						</tr>
+						<tr>
+							<td>
+								<code>
+									<a id="getArbitraryTuple" class="public" href="../qcheck/arbitrary/getArbitraryTuple.html">getArbitraryTuple</a><span class="decoration">(config)</span>
+								</code>
+							</td>
+							<td>Randomly initialize all fields of tuple <code class="lang-d"><span class="typ">Tup</span></code>.
+</td>
+						</tr>
+					</table>
+				</section>
+			</div>
+			<footer>
+				<div id="license-info">
+					
+					
+					
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>

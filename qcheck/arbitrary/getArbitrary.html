@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Function getArbitrary</title>
+		<link rel="stylesheet" href="../../css/style.min.css"/>
+		<script type="text/javascript" src="../../js/script.min.js"></script>
+	</head>
+	<body onload="setupDdox();">
+		<header></header>
+		<nav id="main-nav">
+			<div>
+				<noscript>
+					<p style="color: red">The search functionality needs JavaScript enabled</p>
+				</noscript>
+				<div id="symbolSearchPane" style="display: none">
+					<form action="#" method="GET">
+						<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(24);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" autofocus/>
+					</form>
+					<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+document.getElementById('symbolSearchPane').style.display = 'block';</script>
+				</div>
+				<ul class="tree-view">
+					<li class="tree-view ">
+						<div class="package ">
+							<a href="../../qcheck.html">qcheck</a>
+						</div>
+				<ul class="tree-view">
+					<li>
+						<div class="module selected">
+							<a href="../../qcheck/arbitrary.html">arbitrary</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/config.html">config</a>
+						</div>
+					</li>
+					<li>
+						<div class="module ">
+							<a href="../../qcheck/quickcheck.html">quickcheck</a>
+						</div>
+					</li>
+				</ul>
+					</li>
+				</ul>
+			</div>
+			<p id="main-nav-footer">
+				Built with
+				<a href="https://github.com/MartinNowak/scod">scod</a>
+			</p>
+		</nav>
+		<div id="main-contents">
+			<div>
+				<h1>Function getArbitrary</h1><p>Get a random value of type <code class="lang-d"><span class="pln">T</span></code>.
+   Randomly generates necessary ctor arguments.
+</p>
+				<div class="prototype">
+					<code class="lang-d">
+						<div class="single-prototype">
+				<span class="pln">T</span> <span class="pln">getArbitrary</span>(T, Generators...)
+				<span class="pun">(</span>
+				<br/>
+				&nbsp;&nbsp;<a href="../../qcheck/config/Config.html"><span class="typ">Config</span></a> <span class="pln">config</span> <span class="pun">=</span> <span class="typ">Config<wbr/></span><span class="pun">.</span><span class="pln">init</span>
+				<br/>
+				<span class="pun">)</span><span class="pun">;</span>
+						</div>
+					</code>
+				</div>
+				<section><p>Depending on <code class="lang-d"><span class="typ">Config<wbr/></span><span class="pun">.</span><span class="pln">randomizeFields</span></code>, all fields of structs and classes are random initialized.
+</p>
+</section>
+
+				<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="Generators">Generators</td><td> custom factory functions for specific types</td></tr>
+<tr><td id="config">config</td><td> Configuration for random generation</td></tr>
+</table>
+</section>
+<section><h2>Throws</h2>
+<p>CyclicDependencyException - when ctor arguments cyclically depend on each other
+</p>
+</section>
+<section><h2>Example</h2>
+<p>basic usage
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">auto </span><span class="pln">sarray </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">[</span><span class="lit">4</span><span class="pun">])();
+</span><span class="kwd">auto </span><span class="pln">array </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">float</span><span class="pun">[])();
+</span><span class="kwd">auto </span><span class="pln">aarray </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">[</span><span class="typ">string</span><span class="pun">])();
+</span></code></pre>
+</section>
+<section><h2>Example</h2>
+<p>fields not randomized
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">static struct </span><span class="typ">Tuple </span><span class="pun">{ </span><span class="typ">TypeTuple</span><span class="pun">!(</span><span class="typ">uint</span><span class="pun">, </span><span class="typ">float</span><span class="pun">) </span><span class="pln">vals</span><span class="pun">; </span><span class="kwd">alias </span><span class="pln">vals </span><span class="kwd">this</span><span class="pun">; }
+</span><span class="typ">Config </span><span class="pln">config</span><span class="pun">;
+</span><span class="pln">config<wbr/></span><span class="pun">.</span><span class="pln">randomizeFields </span><span class="pun">= </span><span class="kwd">false</span><span class="pun">;
+</span><span class="kwd">auto </span><span class="pln">val </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">Tuple</span><span class="pun">)(<a href="../../qcheck/arbitrary/getArbitrary.html#config"></span><span class="pln">config</span></a><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">val</span><span class="pun">[</span><span class="lit">0</span><span class="pun">] == </span><span class="typ">uint<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">isNaN</span><span class="pun">(</span><span class="pln">val</span><span class="pun">[</span><span class="lit">1</span><span class="pun">]));
+</span></code></pre>
+</section>
+<section><h2>Example</h2>
+<p>complex example with ctor arguments and generators
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">static struct </span><span class="typ">UserStruct
+</span><span class="pun">{
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">val</span><span class="pun">) { </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">= </span><span class="pln">val</span><span class="pun">; }
+    </span><span class="typ">int </span><span class="pln">val</span><span class="pun">;
+}
+
+</span><span class="kwd">static struct </span><span class="typ">UserStructHolder
+</span><span class="pun">{
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">UserStruct </span><span class="pln">val</span><span class="pun">) { </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">= </span><span class="pln">val</span><span class="pun">; }
+    </span><span class="typ">UserStruct </span><span class="pln">val</span><span class="pun">;
+}
+
+</span><span class="kwd">static struct </span><span class="typ">UserStructInit
+</span><span class="pun">{
+    </span><span class="typ">UserStruct </span><span class="pln">val</span><span class="pun">;
+}
+
+</span><span class="kwd">static </span><span class="typ">UserStruct </span><span class="pln">generator</span><span class="pun">()
+{
+    </span><span class="kwd">return </span><span class="typ">UserStruct</span><span class="pun">(</span><span class="lit">10</span><span class="pun">);
+}
+
+</span><span class="kwd">auto </span><span class="pln">val </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">UserStruct</span><span class="pun">, </span><span class="pln">generator</span><span class="pun">)();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">val<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">== </span><span class="lit">10</span><span class="pun">);
+
+</span><span class="kwd">auto </span><span class="pln">val2 </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">UserStructHolder</span><span class="pun">, </span><span class="pln">generator</span><span class="pun">)();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">val2<wbr/></span><span class="pun">.</span><span class="pln">val<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">== </span><span class="lit">10</span><span class="pun">);
+
+</span><span class="kwd">auto </span><span class="pln">val3 </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">UserStructInit</span><span class="pun">, </span><span class="pln">generator</span><span class="pun">)();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">val3<wbr/></span><span class="pun">.</span><span class="pln">val<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">== </span><span class="lit">10</span><span class="pun">);
+</span></code></pre>
+</section>
+<section><h2>Example</h2>
+<p>picks a random ctor
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">static class </span><span class="typ">MultiCtors
+</span><span class="pun">{
+    </span><span class="typ">uint </span><span class="pln">val</span><span class="pun">;
+
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">uint</span><span class="pun">)
+    {
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">= </span><span class="lit">1</span><span class="pun">;
+    }
+
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">uint</span><span class="pun">, </span><span class="typ">uint</span><span class="pun">)
+    {
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">= </span><span class="lit">2</span><span class="pun">;
+    }
+
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">uint</span><span class="pun">, </span><span class="typ">uint</span><span class="pun">, </span><span class="typ">uint</span><span class="pun">)
+    {
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">= </span><span class="lit">3</span><span class="pun">;
+    }
+
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">uint</span><span class="pun">, </span><span class="typ">uint</span><span class="pun">, </span><span class="typ">uint</span><span class="pun">, </span><span class="typ">uint</span><span class="pun">)
+    {
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">= </span><span class="lit">4</span><span class="pun">;
+    }
+}
+
+</span><span class="kwd">auto </span><span class="pln">initial </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">MultiCtors</span><span class="pun">)();
+</span><span class="kwd">auto </span><span class="pln">i </span><span class="pun">= </span><span class="lit">0</span><span class="pun">;
+</span><span class="kwd">while </span><span class="pun">(</span><span class="pln">initial<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="pun">== </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">MultiCtors</span><span class="pun">)()<wbr/>.</span><span class="pln">val</span><span class="pun">)
+  </span><span class="kwd">assert</span><span class="pun">(++</span><span class="pln">i </span><span class="pun">&lt; </span><span class="lit">100</span><span class="pun">);
+</span></code></pre>
+</section>
+<section><h2>Example</h2>
+<p>field can be configured to be non-random
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">static class </span><span class="typ">ClassWCtor
+</span><span class="pun">{
+    </span><span class="kwd">this</span><span class="pun">()
+    {
+    }
+
+    </span><span class="typ">int </span><span class="pln">m</span><span class="pun">;
+}
+
+</span><span class="kwd">static class </span><span class="typ">TestClass
+</span><span class="pun">{
+    </span><span class="typ">ClassWCtor </span><span class="pln">val</span><span class="pun">;
+}
+
+</span><span class="kwd">static struct </span><span class="typ">TestStruct
+</span><span class="pun">{
+    </span><span class="typ">ClassWCtor </span><span class="pln">val</span><span class="pun">;
+}
+
+</span><span class="kwd">static class </span><span class="typ">ClassWOCtor
+</span><span class="pun">{
+    </span><span class="typ">int </span><span class="pln">m</span><span class="pun">;
+}
+
+</span><span class="typ">Config </span><span class="pln">config</span><span class="pun">;
+</span><span class="pln">config<wbr/></span><span class="pun">.</span><span class="pln">randomizeFields </span><span class="pun">= </span><span class="kwd">false</span><span class="pun">;
+</span><span class="kwd">auto </span><span class="pln">cl </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!</span><span class="typ">TestClass</span><span class="pun">(<a href="../../qcheck/arbitrary/getArbitrary.html#config"></span><span class="pln">config</span></a><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">cl<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="kwd">is null</span><span class="pun">);
+</span><span class="pln">cl </span><span class="pun">= </span><span class="pln">getArbitrary</span><span class="pun">!(</span><span class="typ">TestClass</span><span class="pun">)();
+</span><span class="kwd">assert</span><span class="pun">(!(</span><span class="pln">cl<wbr/></span><span class="pun">.</span><span class="pln">val </span><span class="kwd">is null</span><span class="pun">));
+</span></code></pre>
+</section>
+
+			</div>
+			<footer>
+				<div id="license-info">
+					
+					
+					
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
