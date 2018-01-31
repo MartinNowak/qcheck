@@ -1,7 +1,10 @@
+// generate arbitrary data
 module qcheck.detail.arbitrary;
 
 import std.algorithm, std.array, std.conv, std.exception, std.traits, std.typecons, std.typetuple;
 import qcheck.detail.conv, qcheck.detail.random, qcheck.config, qcheck.exceptions;
+
+package(qcheck):
 
 struct Builder(T, Generators...)
 {

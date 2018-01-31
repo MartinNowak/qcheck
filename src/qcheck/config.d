@@ -1,7 +1,9 @@
+/// optionally configure qcheck
 module qcheck.config;
 
 import std.bitmanip;
 
+///
 struct Config
 {
     enum Ctors { Any, DefaultOnly, }

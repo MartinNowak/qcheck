@@ -1,11 +1,11 @@
-qcheck [![dub](https://img.shields.io/badge/dub-0.10.0-brightgreen.svg)](http://code.dlang.org/packages/qcheck) [![Build Status](https://img.shields.io/travis/MartinNowak/qcheck.svg)](https://travis-ci.org/MartinNowak/qcheck)
-====
+qcheck [![Build Status](https://travis-ci.org/MartinNowak/qcheck.svg?branch=master)](https://travis-ci.org/MartinNowak/qcheck) [![Coverage](https://codecov.io/gh/MartinNowak/qcheck/branch/master/graph/badge.svg)](https://codecov.io/gh/MartinNowak/qcheck) [![Dub](https://img.shields.io/dub/v/qcheck.svg)](http://code.dlang.org/packages/qcheck)
+=====
 
-A library for automatic randomized testing.
+A library for automatic random testing, inspired by Haskell's excellent [QuickCheck](http://www.cse.chalmers.se/~rjmh/QuickCheck/).
 
-### Usage
+# [Documentation](http://martinnowak.github.io/qcheck)
 
-Add qcheck to the dependencies of your project.
+# Example Usage
 
 ```d
 int[] mysort(int[] arr)
@@ -19,6 +19,21 @@ unittest
     import qcheck;
     import std.algorithm;
 
-    quickCheck!((int[] a) => assert(equal(sort(arr.dup), mysort(arr.dup))));
+    quickCheck!((int[] a) => mysort(a.dup).equal(a.sort()));
+}
+```
+
+# Generate Random data
+
+The library can also just be used to generate random data, see [`getArbitrary`](http://martinnowak.github.io/qcheck/qcheck/arbitrary/getArbitrary.html).
+
+```d
+unittest
+{
+    import qcheck.arbitrary;
+
+    auto sarray = getArbitrary!(int[4])();
+    auto array = getArbitrary!(float[])();
+    auto aarray = getArbitrary!(int[string])();
 }
 ```

@@ -1,20 +1,24 @@
+/**
+   Random Testing with arbitrary data.
+ */
 module qcheck.quickcheck;
 
 import std.conv, std.datetime, std.exception, std.traits, std.typecons, std.typetuple, std.stdio;
 import core.exception : AssertError;
 import qcheck.arbitrary, qcheck.config, qcheck.exceptions;
 
-/*
- * Result of a testee. It is okay for a testee to return a boolean
- * result.
- */
+/// Result of a testee. It is okay for a testee to just return a boolean result.
 enum QCheckResult
 {
-    discard = -1,
-    ok = true,
-    fail = false,
+    discard = -1, /// discard input
+    pass = true, /// test succeeded
+    ok = pass, /// alias for pass
+    fail = false, /// test failed
 }
 
+/**
+   Feed testee with arbitrary data to check that it behaves correctly.
+ */
 bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
 {
     alias TypeTuple!(staticMap!(Unqual, ParameterTypeTuple!Testee)) TP;
@@ -103,33 +107,60 @@ bool quickCheck(alias Testee, Generators...)(Config config=Config.init)
     return failingParams.length == 0;
 }
 
+/// comparing sort algorithms
+unittest
+{
+    // https://rosettacode.org/wiki/Sorting_algorithms/Bubble_sort#D
+    static T[] bubbleSort(T)(T[] data) pure nothrow
+    {
+        import std.algorithm : swap;
+        foreach_reverse (n; 0 .. data.length)
+        {
+            bool swapped;
+            foreach (i; 0 .. n)
+                if (data[i] > data[i + 1]) {
+                    swap(data[i], data[i + 1]);
+                    swapped = true;
+                }
+            if (!swapped)
+                break;
+        }
+        return data;
+    }
+
+    /// random data is injected into testee arguments
+    static bool testee(ubyte[] data)
+    {
+        import std.algorithm : equal, sort;
+
+        return bubbleSort(data.dup).equal(data.sort());
+    }
+
+    quickCheck!testee;
+}
+
+/// testee can reject random arguments to enforce additional constraints
+unittest
+{
+    static QCheckResult testee(string haystack, string needle)
+    {
+        import std.algorithm : canFind, boyerMooreFinder;
+
+        if (needle.length < haystack.length)
+            return QCheckResult.discard;
+
+        auto bmFinder = boyerMooreFinder(needle);
+        immutable found = !!bmFinder.beFound(haystack).length;
+        return found == haystack.canFind(needle) ? QCheckResult.pass : QCheckResult.fail;
+    }
+
+    randomSeed = 42;
+    quickCheck!testee;
+}
+
 private:
 
 template Identifier(alias Testee)
 {
     enum Identifier = __traits(identifier, Testee);
-}
-
-unittest
-{
-    static struct A
-    {
-        byte m;
-        bool testMe(A a2) const
-        {
-            return &this != &a2;
-        }
-    }
-
-    static bool testFunc(A a1, A a2)
-    {
-        return &a1 != &a2;
-    }
-
-    Config config;
-    quickCheck!(testFunc)(config);
-    A a;
-    auto dg = &a.testMe;
-    a.m = 10;
-    quickCheck!(dg)(config);
 }

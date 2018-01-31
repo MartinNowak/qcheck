@@ -1,4 +1,4 @@
-/**
+/*
  * Find classinfos at runtime.
  */
 module qcheck.detail.runtimeclass;

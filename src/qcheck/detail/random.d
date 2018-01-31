@@ -1,4 +1,4 @@
-/**
+/*
    Random generators
    Template wrappers around std.random.
 */
@@ -20,10 +20,12 @@ private {
 package:
 // debug=RANDOM;
 
+///
 T randomNumeric(T)() if(isNumeric!T) {
   return randomNumeric!(T)(T.min, T.max);
 }
 
+///
 T randomNumeric(T)(T lo, T hi) if(isNumeric!T)
 in {
   assert(hi >= lo);
@@ -31,11 +33,14 @@ in {
   return hi == lo ? hi : uniform!"[]"(lo, hi, sGen);
 }
 
+///
 T randomChar(T)() {
+  import std.utf : isValidDchar;
+
   T res;
   do {
     res = clipTo!T(randomNumeric(cast(uint)T.min, cast(uint)T.max));
-  } while (!std.utf.isValidDchar(res));
+  } while (!isValidDchar(res));
   return res;
 }
 

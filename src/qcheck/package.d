@@ -1,3 +1,4 @@
+/// package to import
 module qcheck;
 
 public:
